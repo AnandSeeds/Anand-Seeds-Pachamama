@@ -110,7 +110,7 @@ int lastInt = millis();
 // File myFile;
 /****** FIN MODULO SIM ******/
 #include <SoftwareSerial.h>
-SoftwareSerial sim800l(4,5); //RX - TX
+SoftwareSerial sim800l(3,4); //RX - TX
 /****** INICIO MODULO SIM ******/
 
 // #include <SD.h>
@@ -134,9 +134,28 @@ void setup() {
 
 	Serial.begin(9600);
 	Serial.println("Iniciando..");
-	mySerial.begin(9600);
-	// pinMode(53, OUTPUT);
+        sim800l.begin(19200); //Configuracion de puerto serial del modulo (baudios por segundo)
+	
 
+        mySerial.begin(9600);
+	// pinMode(53, OUTPUT);
+        Serial.println("Iniciando configuracion del modulo GSM"); 
+        sim800l.println(F("AT"));
+        delay(500);
+        Serial.println(debug());
+        sim800l.println(F("AT+CBC"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+        delay(500);
+        Serial.println(debug());
+        sim800l.println(F("AT+IPR=19200"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+        delay(500);
+        Serial.println(debug());
+        
+        sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
+        delay(500);
+        Serial.println(debug());
+        configuracionGPRS();
+        Serial.print("Configuracion finalizada.\r\n");
+        //enviardatos();
 	dht.begin();
 
 	pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
@@ -226,6 +245,7 @@ void loop() {
 	Imprime_registros4();
 
         enviarDatosSIM();
+        Serial.print("Envio de datos finalizado.\r\n");
 }
 
 /****** INICIO FUNCIONES ADICIONALES ******/
@@ -502,6 +522,35 @@ float mapfloat(float x, float in_min, float in_max, float out_min,
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+
+
+void configuracionGPRS() {
+        sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
+        Serial.println(debug());
+        delay(500);
+        sim800l.println(F("AT+CIPSHUT")); // Resetea las direcciones IP
+        Serial.println(debug());
+        delay(500);
+        sim800l.println(F("AT+CGATT=1")); // Verifica si el gprs esta activo o no
+        Serial.println(debug());
+        delay(500);
+        sim800l.println(F("AT+CIPSTATUS")); //Verifica si la pila o stack IP es inicializada
+        Serial.println(debug());
+        delay(500);
+        sim800l.println(F("AT+CIPMUX=0")); //Esta la conexión en modo simple(udp/tcp cliente o tcp server)
+        Serial.println(debug());
+        delay(500);
+        
+        // Configurar tarea y configura el APN
+        sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
+        Serial.println(debug());
+        delay(500);
+        
+        sim800l.println(F("AT+CIICR")); // Levantar conexión wireless(GPRS o CSD)
+        Serial.println(debug());
+        delay(500);
+}
+
 /**
  * Se acitva si el peso se encuentra en un limite definido
  */
@@ -523,16 +572,18 @@ void enviarDatosSIM() {
         Serial.println(debug());
         delay(500);
         //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)+"&uv="+ String(t)+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)+"&gpslat="+String(latitude)+"&gpslog="+ String(longitude)); 
-        sim800l.println("GET /index.php?data=N0FIQXVGSnFZMWF6WUx3VkVMbnhRYjhRZE1uNXRTY3JpOGVQTUVobEtRMWlPYmo4TVdzMENwMTROaWloUnllOGNDeW8wZjhwWm1lN29Fc1I1QmprbHk4bFhBPT0"
-        +"&id_dispositivo=1&temp="+ String(t)
-        +"&hum="+ String(h)
-        +"&uv="+ String(t)
-        +"&co="+ String(CO)
-        +"&cov="+ String(COV)
-        +"&hs="+ String(HS)
-        +"&gpslat="+String(latitude)
-        +"&gpslog="+ String(longitude)); 
-        
+//        sim800l.println("GET /index.php?data=N0FIQXVGSnFZMWF6WUx3VkVMbnhRYjhRZE1uNXRTY3JpOGVQTUVobEtRMWlPYmo4TVdzMENwMTROaWloUnllOGNDeW8wZjhwWm1lN29Fc1I1QmprbHk4bFhBPT0"
+//        +"&id_dispositivo=1&temp="+ String(t)
+//        +"&hum="+ String(h)
+//        +"&uv="+ String(t)
+//        +"&co="+ String(CO)
+//        +"&cov="+ String(COV)
+//        +"&hs="+ String(HS)
+//        +"&gpslat="+String(latitude)
+//        +"&gpslog="+ String(longitude));
+        //sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=1&ts=1&ta=1&hs=1&hr=1&nuv=1&iuv=1&lat=10&log=10 HTTP/1.1");
+        sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N");
+        //sim800l.println("Host: 107.170.208.9");
         //+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)
         //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)); 
         //sim800l.println(F("GET /dato.php?temp=200&hum=200&ozon=100&uv=100")); 
