@@ -1,7 +1,7 @@
 /*
  ***********************************************************************
  *                      LIBRERIAS y CONSTANTES
- * *********************************************************************
+ ***********************************************************************
  */
 
 /****** INICIO MODULO RELOJ ******/
@@ -105,6 +105,13 @@ int lastInt = millis();
 /****** FIN CONTADOR SET POINT *****/
 
 /****** INICIO MODULO SD ******/
+
+// #include <SD.h>
+// File myFile;
+/****** FIN MODULO SIM ******/
+#include <SoftwareSerial.h>
+SoftwareSerial sim800l(4,5); //RX - TX
+/****** INICIO MODULO SIM ******/
 
 // #include <SD.h>
 // File myFile;
@@ -212,11 +219,13 @@ void loop() {
 	GetHS();
 	GetUV();
 	GetFecha();
-
+        
 	Imprime_registros();
 	Imprime_registros2();
 	Imprime_registros3();
 	Imprime_registros4();
+
+        enviarDatosSIM();
 }
 
 /****** INICIO FUNCIONES ADICIONALES ******/
@@ -492,5 +501,88 @@ float mapfloat(float x, float in_min, float in_max, float out_min,
 		float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+/**
+ * Se acitva si el peso se encuentra en un limite definido
+ */
+void enviarDatosSIM() {
+        //Se acitva si el peso se encuentra en un limite definido
+        //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
+        //Serial.println(debug());
+        //delay(500);
+        sim800l.println("AT+CIFSR"); // Obtiene una dirección IP
+        Serial.println(debug());
+        delay(2000);
+        
+        sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"80\"")); //Inicia conexión UDP o TCP
+        Serial.println(debug());
+        delay(2000);
+        
+        sim800l.println(F("AT+CIPSEND\r\n")); // Envia datos al servidor remoto, ctlr+z o 0x1A,
+        //verifica que los datos salieron del puerto serial pero no indica si llegaron al servidor UDP
+        Serial.println(debug());
+        delay(500);
+        //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)+"&uv="+ String(t)+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)+"&gpslat="+String(latitude)+"&gpslog="+ String(longitude)); 
+        sim800l.println("GET /index.php?data=N0FIQXVGSnFZMWF6WUx3VkVMbnhRYjhRZE1uNXRTY3JpOGVQTUVobEtRMWlPYmo4TVdzMENwMTROaWloUnllOGNDeW8wZjhwWm1lN29Fc1I1QmprbHk4bFhBPT0"
+        +"&id_dispositivo=1&temp="+ String(t)
+        +"&hum="+ String(h)
+        +"&uv="+ String(t)
+        +"&co="+ String(CO)
+        +"&cov="+ String(COV)
+        +"&hs="+ String(HS)
+        +"&gpslat="+String(latitude)
+        +"&gpslog="+ String(longitude)); 
+        
+        //+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)
+        //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)); 
+        //sim800l.println(F("GET /dato.php?temp=200&hum=200&ozon=100&uv=100")); 
+        // Se envia por un peticion GET los valores obtenidos
+        //Serial.println(debug());
+        //delay(500);
+        pushSlow("\r\n",100,100); //Envia un salto de linea
+        pushSlow("\x1A",100,100);//ctlr+z para finalizar el envio o 0x1A
+        //sim800l.write(0x1A);//ctlr+z para finalizar el envio o 0x1A
+        Serial.println(debug());
+        delay(500);
+        sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
+        Serial.println(debug());
+        delay(4000);
+        //pesomin=0;
+}
+
+/**
+ * Envia datos por el SoftSerial lentamente
+ */
+void pushSlow(char* command,int charaterDelay,int endLineDelay) {
+        for(int i=0; i<strlen(command); i++) {
+            sim800l.write(command[i]);
+            if(command[i]=='\n') {
+                 delay(endLineDelay);
+            } else {
+                 delay(charaterDelay);
+            }
+        }
+}
+
+/**
+ *
+ */
+char *debug()  // devuelve el ``contenido de un objeto apuntado por un apuntador''. 
+{
+int i=0;
+char cad[255]="\0";
+char c='\0';
+        
+        strcpy(cad,"");
+        while(sim800l.available()>0)
+        {
+        c=sim800l.read();
+        cad[i]=c;
+        i++;
+        }
+      
+return cad;
+}
+
 
 /****** FIN FUNCIONES ADICIONALES ******/
