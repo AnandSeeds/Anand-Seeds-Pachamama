@@ -306,7 +306,7 @@ void GetHS()
 }
 
 /**
- * Se obtiene la radiacion ultravioleta
+ * Se obtiene la radiacion ultravioleta y se guarda en la variable global uvIntensity.
  */
 void GetUV()
 {
@@ -334,11 +334,8 @@ void GetUV()
 }
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Arreglo Set Point que no se sabe qué significa
  */
-/********************Arreglo Set Point ****************/
 void SetPoint()
 {
     if ((millis() - lastInt) > 500) {
@@ -382,13 +379,15 @@ void SetPoint()
      */
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Se imprimen los registros de:
+ * Humedad Relativa
+ * Temperatura
+ * Humedad del Suelo
+ * Temperatura del Suelo
+ * Se espera 3 segundo para que se mantengan los datos.
  */
 void Imprime_registros()
 {
-
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("H:");
@@ -406,9 +405,10 @@ void Imprime_registros()
 }
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Se imprimen los datos:
+ * Nivel UV
+ * Intensidad UV
+ * Y se esperan 3 segundos.
  */
 void Imprime_registros2()
 {
@@ -424,9 +424,7 @@ void Imprime_registros2()
 }
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Se imprime en el LCD la latitud y longitud dadas por el GPS
  */
 void Imprime_registros3()
 {
@@ -442,9 +440,9 @@ void Imprime_registros3()
 }
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Se imprimen los registros:
+ * set point
+ * Y se esperan 3 segundos
  */
 void Imprime_registros4()
 {
@@ -457,9 +455,7 @@ void Imprime_registros4()
 }
 
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Para información del usuario en el LCD se imprime la fecha y la hora.
  */
 void GetFecha()
 {
@@ -482,12 +478,10 @@ void GetFecha()
     delay(2000);
 }
 
-
-/*************Funcion para promedio de muestreo******************/
 /**
- * example of basic @param usage
- * @param bool $baz 
- * @return mixed 
+ * Funcion para promedio de muestreo
+ * @param int pinToRead el puerto análogo que se debe leer 
+ * @return int se obtiene el promedio de las últimas 8 muestras tomadas en el pin 
  */
 int averageAnalogRead(int pinToRead)
 {
@@ -501,11 +495,14 @@ int averageAnalogRead(int pinToRead)
     return (runningValue);
 }
 
-/************Arreglo para mapeo de punto flotante UVSensor*********/
 /**
- * el param
+ * Arreglo para mapeo de punto flotante UVSensor
  * @param float x es alguna cosa
- * @return float  
+ * @param float in_min es alguna cosa
+ * @param float in_max es alguna cosa
+ * @param float out_min es alguna cosa
+ * @param float out_max es alguna cosa
+ * @return float que representa alguna cosa
  */
 float mapfloat(float x, float in_min, float in_max, float out_min, float out_max)
 {
