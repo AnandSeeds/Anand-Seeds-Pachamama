@@ -1,4 +1,3 @@
-
 /*
  ***********************************************************************
  *                      LIBRERIAS y CONSTANTES
@@ -114,113 +113,110 @@ int lastInt = millis();
 /**
  * FUNCION DE CONFIGURACION INICIAL
  */
-void setup()
-{
+void setup() {
 
-    // Wire.begin();
-    // RTC.begin();
-    // Si quitamos el comentario de la linea siguiente, se ajusta la hora
-    // y la fecha con la del ordenador
-    // RTC.adjust(DateTime(__DATE__, __TIME__));
-    myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora,
-    // dia de la
-    // semana, dia del
-    // mes, mes, año
+	// Wire.begin();
+	// RTC.begin();
+	// Si quitamos el comentario de la linea siguiente, se ajusta la hora
+	// y la fecha con la del ordenador
+	// RTC.adjust(DateTime(__DATE__, __TIME__));
+	myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora,
+	// dia de la
+	// semana, dia del
+	// mes, mes, año
 
-    Serial.begin(9600);
-    Serial.println("Iniciando..");
-    mySerial.begin(9600);
-    // pinMode(53, OUTPUT);
+	Serial.begin(9600);
+	Serial.println("Iniciando..");
+	mySerial.begin(9600);
+	// pinMode(53, OUTPUT);
 
-    dht.begin();
+	dht.begin();
 
-    pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
-    pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
+	pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
+	pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
 
-    lcd.begin(16, 2);
+	lcd.begin(16, 2);
 
-    // Antirebote para pulsador por software
-    attachInterrupt(0, SetPoint, FALLING);
+	// Antirebote para pulsador por software
+	attachInterrupt(0, SetPoint, FALLING);
 
-    // /////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////
 
-    // Serial.print("Initializing SD card...");
-    //
-    // pinMode(53, OUTPUT);
-    //
-    // if (!SD.begin(53)) {
-    // Serial.println("initialization failed!");
-    // return;
-    // }
-    // Serial.println("initialization done.");
+	// Serial.print("Initializing SD card...");
+	//
+	// pinMode(53, OUTPUT);
+	//
+	// if (!SD.begin(53)) {
+	// Serial.println("initialization failed!");
+	// return;
+	// }
+	// Serial.println("initialization done.");
 }
-
 
 /**
  * FUNCION DE BUCLE PRINCIPAL
  */
-void loop()
-{
-    // Start printing elements as individuals
-    myRTC.updateTime();
-    Serial.print("Current Date / Time: ");
-    Serial.print(myRTC.dayofmonth);
-    Serial.print("/");
-    Serial.print(myRTC.month);
-    Serial.print("/");
-    Serial.print(myRTC.year);
-    Serial.print(" ");
-    Serial.print(myRTC.hours);
-    Serial.print(":");
-    Serial.print(myRTC.minutes);
-    Serial.print(":");
-    Serial.println(myRTC.seconds);
-    // Delay so the program doesn't print non-stop
-    delay(5000);
+void loop() {
+	// Start printing elements as individuals
+	myRTC.updateTime();
+	Serial.print("Current Date / Time: ");
+	Serial.print(myRTC.dayofmonth);
+	Serial.print("/");
+	Serial.print(myRTC.month);
+	Serial.print("/");
+	Serial.print(myRTC.year);
+	Serial.print(" ");
+	Serial.print(myRTC.hours);
+	Serial.print(":");
+	Serial.print(myRTC.minutes);
+	Serial.print(":");
+	Serial.println(myRTC.seconds);
+	// Delay so the program doesn't print non-stop
+	delay(5000);
 
-    /*
-     * myFile = SD.open("test.txt", FILE_WRITE);
-     * 
-     * // if the file opened okay, write to it: if (myFile) {
-     * Serial.print("Writing to test.txt...");
-     * 
-     * DateTime now = RTC.now(); myFile.print(now.day(), DEC);
-     * myFile.print("/"); myFile.print(now.month(), DEC);
-     * myFile.print("/"); myFile.print(now.year(), DEC); myFile.print("
-     * "); myFile.print(now.hour(), DEC); myFile.print(":");
-     * myFile.print(now.minute(), DEC); myFile.print(":");
-     * myFile.print(now.second(), DEC); myFile.print(" ");
-     * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
-     * myFile.print(t); myFile.print(","); myFile.print(uvindex);
-     * myFile.print(","); myFile.print(CO); myFile.print(",");
-     * myFile.print(COV); myFile.print(","); myFile.print(MP);
-     * myFile.print(","); myFile.print(latit); myFile.print(",");
-     * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
-     * // close the file: myFile.close(); Serial.println("done."); } else
-     * { // if the file didn't open, print an error: Serial.println("error 
-     * opening test.txt"); }
-     * 
-     * // re-open the file for reading: myFile = SD.open("test.txt"); if
-     * (myFile) { Serial.println("test.txt:");
-     * 
-     * // read from the file until there's nothing else in it: while
-     * (myFile.available()) { Serial.write(myFile.read()); } // close the
-     * file: myFile.close(); } else { // if the file didn't open, print an 
-     * error: Serial.println("error opening test.txt"); }
-     * 
-     */
+	/*
+	 * myFile = SD.open("test.txt", FILE_WRITE);
+	 * 
+	 * // if the file opened okay, write to it: if (myFile) {
+	 * Serial.print("Writing to test.txt...");
+	 * 
+	 * DateTime now = RTC.now(); myFile.print(now.day(), DEC);
+	 * myFile.print("/"); myFile.print(now.month(), DEC);
+	 * myFile.print("/"); myFile.print(now.year(), DEC); myFile.print("
+	 * "); myFile.print(now.hour(), DEC); myFile.print(":");
+	 * myFile.print(now.minute(), DEC); myFile.print(":");
+	 * myFile.print(now.second(), DEC); myFile.print(" ");
+	 * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
+	 * myFile.print(t); myFile.print(","); myFile.print(uvindex);
+	 * myFile.print(","); myFile.print(CO); myFile.print(",");
+	 * myFile.print(COV); myFile.print(","); myFile.print(MP);
+	 * myFile.print(","); myFile.print(latit); myFile.print(",");
+	 * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
+	 * // close the file: myFile.close(); Serial.println("done."); } else
+	 * { // if the file didn't open, print an error: Serial.println("error 
+	 * opening test.txt"); }
+	 * 
+	 * // re-open the file for reading: myFile = SD.open("test.txt"); if
+	 * (myFile) { Serial.println("test.txt:");
+	 * 
+	 * // read from the file until there's nothing else in it: while
+	 * (myFile.available()) { Serial.write(myFile.read()); } // close the
+	 * file: myFile.close(); } else { // if the file didn't open, print an 
+	 * error: Serial.println("error opening test.txt"); }
+	 * 
+	 */
 
-    GetGPS();
-    GetHT();
-    GetTs();
-    GetHS();
-    GetUV();
-    GetFecha();
+	GetGPS();
+	GetHT();
+	GetTs();
+	GetHS();
+	GetUV();
+	GetFecha();
 
-    Imprime_registros();
-    Imprime_registros2();
-    Imprime_registros3();
-    Imprime_registros4();
+	Imprime_registros();
+	Imprime_registros2();
+	Imprime_registros3();
+	Imprime_registros4();
 }
 
 /****** INICIO FUNCIONES ADICIONALES ******/
@@ -229,154 +225,148 @@ void loop()
  * Se utiliza para cargar los datos del modulo GPS y se guardan en las variables
  * globales latit y longi.
  */
-void GetGPS()
-{
+void GetGPS() {
 
-    bool newData = false;
-    unsigned long chars = 0;
-    unsigned short sentences, failed;
+	bool newData = false;
+	unsigned long chars = 0;
+	unsigned short sentences, failed;
 
-    for (unsigned long start = millis(); millis() - start < 1000;) {
-        while (mySerial.available()) {
-            int c = mySerial.read();
-            ++chars;
-            if (gps.encode(c))
-                newData = true;
-        }
-    }
+	for (unsigned long start = millis(); millis() - start < 1000;) {
+		while (mySerial.available()) {
+			int c = mySerial.read();
+			++chars;
+			if (gps.encode(c))
+				newData = true;
+		}
+	}
 
-    if (newData) {
+	if (newData) {
 
-        if (secondsToFirstLocation == 0) {
-            secondsToFirstLocation = (millis() - startMillis) / 1000;
-        }
+		if (secondsToFirstLocation == 0) {
+			secondsToFirstLocation = (millis() - startMillis) / 1000;
+		}
 
-        unsigned long age;
-        gps.f_get_position(&latitude, &longitude, &age);
+		unsigned long age;
+		gps.f_get_position(&latitude, &longitude, &age);
 
-        Serial.print("Location: ");
-        Serial.print(latitude, 6);
-        Serial.print(" , ");
-        Serial.print(longitude, 6);
-        Serial.println("");
-    }
+		Serial.print("Location: ");
+		Serial.print(latitude, 6);
+		Serial.print(" , ");
+		Serial.print(longitude, 6);
+		Serial.println("");
+	}
 
-    dtostrf(latitude, 6, 6, latit);
-    dtostrf(longitude, 6, 6, longi);
-    Serial.println(latit);
-    Serial.println(longi);
+	dtostrf(latitude, 6, 6, latit);
+	dtostrf(longitude, 6, 6, longi);
+	Serial.println(latit);
+	Serial.println(longi);
 }
 
 /**
  * Se obtiene la humedad relativa (aire) y se guarda en las variables globales h y t.
  */
-void GetHT()
-{
-    h = dht.readHumidity();
-    t = dht.readTemperature();
-    // Serial.print("Humidity: ");
-    // Serial.print(h);
-    // Serial.print("% ");
+void GetHT() {
+	h = dht.readHumidity();
+	t = dht.readTemperature();
+	// Serial.print("Humidity: ");
+	// Serial.print(h);
+	// Serial.print("% ");
 }
 
 /**
  * Se obtiene la temperatura por medio de la lectura analoga del pin temp_pin
  */
-void GetTs()
-{
-    TempC = analogRead(temp_pin);
-    TempC = (5.0 * TempC * 100.0) / 1024.0;
-    // Serial.print(temperatura);
-    // Serial.println(" oC");
-    // delay(1000);
+void GetTs() {
+	TempC = analogRead(temp_pin);
+	TempC = (5.0 * TempC * 100.0) / 1024.0;
+	// Serial.print(temperatura);
+	// Serial.println(" oC");
+	// delay(1000);
 }
 
 /**
  * Se optiene la humedad del suelo por medio del PIN analogo A2.
  */
-void GetHS()
-{
-    int val2 = analogRead(A2);
-    HS = val2 * (5.0 / 1023.0);
-    // Serial.print("Humedad Suelo:");
-    // delay(1000);
-    // Serial.print(HS);
-    // delay(1000);
-    // Serial.print("\n ");
+void GetHS() {
+	int val2 = analogRead(A2);
+	HS = val2 * (5.0 / 1023.0);
+	// Serial.print("Humedad Suelo:");
+	// delay(1000);
+	// Serial.print(HS);
+	// delay(1000);
+	// Serial.print("\n ");
 }
 
 /**
  * Se obtiene la radiacion ultravioleta y se guarda en la variable global uvIntensity.
  */
-void GetUV()
-{
-    uvLevel = averageAnalogRead(UVOUT);
-    refLevel = averageAnalogRead(REF_3V3);
+void GetUV() {
+	uvLevel = averageAnalogRead(UVOUT);
+	refLevel = averageAnalogRead(REF_3V3);
 
-    // Use the 3.3V power pin as a reference to get a very accurate output
-    // value from sensor
-    outputVoltage = 3.3 / refLevel * uvLevel;
-    uvIntensity = mapfloat(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
+	// Use the 3.3V power pin as a reference to get a very accurate output
+	// value from sensor
+	outputVoltage = 3.3 / refLevel * uvLevel;
+	uvIntensity = mapfloat(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
 
-    // Serial.print("Nivel MP8511:");
-    // Serial.print(uvLevel);
-    // delay(1000);
-    // Serial.print("\n ");
-    // Serial.print(" Voltaje MP8511 : ");
-    // Serial.print(outputVoltage);
-    // delay(1000);
-    // Serial.print("\n ");
-    // Serial.print("Intensidad (mW/cm^2): ");
-    // Serial.print(uvIntensity);
-    // delay(500);
-    // Serial.print("\n ");
-    // delay(500);
+	// Serial.print("Nivel MP8511:");
+	// Serial.print(uvLevel);
+	// delay(1000);
+	// Serial.print("\n ");
+	// Serial.print(" Voltaje MP8511 : ");
+	// Serial.print(outputVoltage);
+	// delay(1000);
+	// Serial.print("\n ");
+	// Serial.print("Intensidad (mW/cm^2): ");
+	// Serial.print(uvIntensity);
+	// delay(500);
+	// Serial.print("\n ");
+	// delay(500);
 }
 
 /**
  * Arreglo Set Point que no se sabe qué significa
  */
-void SetPoint()
-{
-    if ((millis() - lastInt) > 500) {
-        contador++;
-        lastInt = millis();
-    }
+void SetPoint() {
+	if ((millis() - lastInt) > 500) {
+		contador++;
+		lastInt = millis();
+	}
 }
 
 /*
-     * void GetSD() {
-     * 
-     * 
-     * myFile = SD.open("test.txt", FILE_WRITE);
-     * 
-     * // if the file opened okay, write to it: if (myFile) {
-     * 
-     * DateTime now = RTC.now(); Serial.print("Writing to test.txt...");
-     * 
-     * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
-     * myFile.print(t); myFile.print(","); myFile.print(uvindex);
-     * myFile.print(","); myFile.print(CO); myFile.print(",");
-     * myFile.print(COV); myFile.print(","); myFile.print(MP);
-     * myFile.print(","); myFile.print(latit); myFile.print(",");
-     * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
-     * // close the file: myFile.close(); Serial.println("done."); } else
-     * { // if the file didn't open, print an error: Serial.println("error 
-     * opening test.txt"); }
-     * 
-     * // re-open the file for reading: myFile = SD.open("test.txt"); if
-     * (myFile) { Serial.println("test.txt:");
-     * 
-     * // read from the file until there's nothing else in it: while
-     * (myFile.available()) { Serial.write(myFile.read()); } // close the
-     * file: myFile.close(); } else { // if the file didn't open, print an 
-     * error: Serial.println("error opening test.txt"); }
-     * 
-     * 
-     * 
-     * 
-     * } 
-     */
+ * void GetSD() {
+ * 
+ * 
+ * myFile = SD.open("test.txt", FILE_WRITE);
+ * 
+ * // if the file opened okay, write to it: if (myFile) {
+ * 
+ * DateTime now = RTC.now(); Serial.print("Writing to test.txt...");
+ * 
+ * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
+ * myFile.print(t); myFile.print(","); myFile.print(uvindex);
+ * myFile.print(","); myFile.print(CO); myFile.print(",");
+ * myFile.print(COV); myFile.print(","); myFile.print(MP);
+ * myFile.print(","); myFile.print(latit); myFile.print(",");
+ * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
+ * // close the file: myFile.close(); Serial.println("done."); } else
+ * { // if the file didn't open, print an error: Serial.println("error 
+ * opening test.txt"); }
+ * 
+ * // re-open the file for reading: myFile = SD.open("test.txt"); if
+ * (myFile) { Serial.println("test.txt:");
+ * 
+ * // read from the file until there's nothing else in it: while
+ * (myFile.available()) { Serial.write(myFile.read()); } // close the
+ * file: myFile.close(); } else { // if the file didn't open, print an 
+ * error: Serial.println("error opening test.txt"); }
+ * 
+ * 
+ * 
+ * 
+ * } 
+ */
 
 /**
  * Se imprimen los registros de:
@@ -386,22 +376,21 @@ void SetPoint()
  * Temperatura del Suelo
  * Se espera 3 segundo para que se mantengan los datos.
  */
-void Imprime_registros()
-{
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("H:");
-    lcd.print(h);
-    lcd.setCursor(0, 1);
-    lcd.print("T:");
-    lcd.print(t);
-    lcd.setCursor(9, 0);
-    lcd.print("Hs:");
-    lcd.print(HS);
-    lcd.setCursor(9, 1);
-    lcd.print("Ts:");
-    lcd.print(TempC);
-    delay(3000);
+void Imprime_registros() {
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("H:");
+	lcd.print(h);
+	lcd.setCursor(0, 1);
+	lcd.print("T:");
+	lcd.print(t);
+	lcd.setCursor(9, 0);
+	lcd.print("Hs:");
+	lcd.print(HS);
+	lcd.setCursor(9, 1);
+	lcd.print("Ts:");
+	lcd.print(TempC);
+	delay(3000);
 }
 
 /**
@@ -410,33 +399,31 @@ void Imprime_registros()
  * Intensidad UV
  * Y se esperan 3 segundos.
  */
-void Imprime_registros2()
-{
+void Imprime_registros2() {
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("UV level:");
-    lcd.print(uvLevel);
-    lcd.setCursor(0, 1);
-    lcd.print("UV Inten:");
-    lcd.print(uvIntensity);
-    delay(3000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("UV level:");
+	lcd.print(uvLevel);
+	lcd.setCursor(0, 1);
+	lcd.print("UV Inten:");
+	lcd.print(uvIntensity);
+	delay(3000);
 }
 
 /**
  * Se imprime en el LCD la latitud y longitud dadas por el GPS
  */
-void Imprime_registros3()
-{
+void Imprime_registros3() {
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("La:");
-    lcd.print(latit);
-    lcd.setCursor(0, 1);
-    lcd.print("Lo:");
-    lcd.print(longi);
-    delay(3000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("La:");
+	lcd.print(latit);
+	lcd.setCursor(0, 1);
+	lcd.print("Lo:");
+	lcd.print(longi);
+	delay(3000);
 }
 
 /**
@@ -444,38 +431,36 @@ void Imprime_registros3()
  * set point
  * Y se esperan 3 segundos
  */
-void Imprime_registros4()
-{
+void Imprime_registros4() {
 
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Set Point:");
-    lcd.print(contador);
-    delay(3000);
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("Set Point:");
+	lcd.print(contador);
+	delay(3000);
 }
 
 /**
  * Para información del usuario en el LCD se imprime la fecha y la hora.
  */
-void GetFecha()
-{
-    // DateTime now = RTC.now();
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("FECHA:");
-    lcd.print(myRTC.dayofmonth);
-    lcd.print("/");
-    lcd.print(myRTC.month);
-    lcd.print("/");
-    lcd.print(myRTC.year);
-    lcd.setCursor(0, 1);
-    lcd.print("HORA:");
-    lcd.print(myRTC.hours);
-    lcd.print(":");
-    lcd.print(myRTC.minutes);
-    lcd.print(":");
-    lcd.print(myRTC.seconds);
-    delay(2000);
+void GetFecha() {
+	// DateTime now = RTC.now();
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print("FECHA:");
+	lcd.print(myRTC.dayofmonth);
+	lcd.print("/");
+	lcd.print(myRTC.month);
+	lcd.print("/");
+	lcd.print(myRTC.year);
+	lcd.setCursor(0, 1);
+	lcd.print("HORA:");
+	lcd.print(myRTC.hours);
+	lcd.print(":");
+	lcd.print(myRTC.minutes);
+	lcd.print(":");
+	lcd.print(myRTC.seconds);
+	delay(2000);
 }
 
 /**
@@ -483,16 +468,15 @@ void GetFecha()
  * @param int pinToRead el puerto análogo que se debe leer 
  * @return int se obtiene el promedio de las últimas 8 muestras tomadas en el pin 
  */
-int averageAnalogRead(int pinToRead)
-{
-    byte numberOfReadings = 8;
-    unsigned int runningValue = 0;
+int averageAnalogRead(int pinToRead) {
+	byte numberOfReadings = 8;
+	unsigned int runningValue = 0;
 
-    for (int x = 0; x < numberOfReadings; x++)
-        runningValue += analogRead(pinToRead);
-    runningValue /= numberOfReadings;
+	for (int x = 0; x < numberOfReadings; x++)
+		runningValue += analogRead(pinToRead);
+	runningValue /= numberOfReadings;
 
-    return (runningValue);
+	return (runningValue);
 }
 
 /**
@@ -504,10 +488,9 @@ int averageAnalogRead(int pinToRead)
  * @param float out_max es alguna cosa
  * @return float que representa alguna cosa
  */
-float mapfloat(float x, float in_min, float in_max, float out_min, float out_max)
-{
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+float mapfloat(float x, float in_min, float in_max, float out_min,
+		float out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
 
 /****** FIN FUNCIONES ADICIONALES ******/
