@@ -1,6 +1,6 @@
 <?php
 //Se establece el espacio de nombre
-namespace gui\accesoIncorrecto\formulario;
+namespace servicioWeb\formulario;
 // Se verifica si el usuario está autorizado
 if (!isset($GLOBALS['autorizado'])) {
 	include ('../index.php');
@@ -12,10 +12,10 @@ class Form {
 	var $lenguaje;
 	var $miFormulario;
 	var $site;
-	
+
 	function __construct($lenguaje, $formulario) {
 		$this -> miConfigurador = \Configurador::singleton();
-		
+
 		$this -> miInspectorHTML = \InspectorHTML::singleton();
 
 		$this -> miConfigurador -> fabricaConexiones -> setRecursoDB('principal');
@@ -23,13 +23,13 @@ class Form {
 		$this -> lenguaje = $lenguaje;
 
 		$this -> miFormulario = $formulario;
-		
-		$this -> site = $this->miConfigurador->getVariableConfiguracion ( "rutaBloque" );
+
+		$this -> site = $this -> miConfigurador -> getVariableConfiguracion("rutaBloque");
 	}
 
 	function miForm() {
 		// Rescatar los datos de este bloque
-		include $this->site.'formulario/paginaInicio.html.php';
+		include $this -> site . 'formulario/paginaInicio.html.php';
 	}
 
 	function mensaje() {

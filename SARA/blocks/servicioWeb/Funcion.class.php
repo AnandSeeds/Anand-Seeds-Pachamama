@@ -1,10 +1,10 @@
 <?php
 
-namespace gui\accesoIncorrecto;
+namespace servicioWeb;
 
-if (! isset ( $GLOBALS ["autorizado"] )) {
+if (!isset($GLOBALS["autorizado"])) {
 	include ("../index.php");
-	exit ();
+	exit();
 }
 
 include_once ("core/manager/Configurador.class.php");
@@ -27,76 +27,85 @@ class Funcion {
 	var $miRecursoDB;
 	var $crypto;
 	function verificarCampos() {
-		include_once ($this->ruta . "/funcion/verificarCampos.php");
-		if ($this->error == true) {
+		include_once ($this -> ruta . "/funcion/verificarCampos.php");
+		if ($this -> error == true) {
 			return false;
 		} else {
 			return true;
 		}
 	}
+
 	function redireccionar($opcion, $valor = "") {
-		include_once ($this->ruta . "/funcion/redireccionar.php");
-	}	
-	function registrarDatos($opcion, $valor = "") {
-		include_once ($this->ruta . "/funcion/redireccionar.php");
+		include_once ($this -> ruta . "/funcion/redireccionar.php");
 	}
+
+	function registrarDatos($opcion, $valor = "") {
+		include_once ($this -> ruta . "/funcion/redireccionar.php");
+	}
+
 	function action() {
 		$resultado = true;
-		
+
 		// Aquí se coloca el código que procesará los diferentes formularios que pertenecen al bloque
 		// aunque el código fuente puede ir directamente en este script, para facilitar el mantenimiento
 		// se recomienda que aqui solo sea el punto de entrada para incluir otros scripts que estarán
 		// en la carpeta funcion
-		
+
 		// Importante: Es adecuado que sea una variable llamada opcion o action la que guie el procesamiento:
-		
-		if (isset ( $_REQUEST ['opcion'] )) {		
-			switch ($_REQUEST ['opcion']) {		
+
+		if (isset($_REQUEST['opcion'])) {
+			switch ($_REQUEST ['opcion']) {
 				case 'registrarDatos' :
-					include ($this->ruta.'/funcion/RegistrarDatos.php');
+					include ($this -> ruta . '/funcion/RegistrarDatos.php');
 					break;
 				case 'consultarDatos' :
-					include ($this->ruta.'/funcion/ConsultarDatos.php');
+					include ($this -> ruta . '/funcion/ConsultarDatos.php');
 					break;
 			}
 		} else {
-			$_REQUEST ['opcion'] = "mostrar";
-			include_once ($this->ruta . "/funcion/formProcessor.php");
+			$_REQUEST['opcion'] = "mostrar";
+			include_once ($this -> ruta . "/funcion/formProcessor.php");
 		}
-		
+
 		return $resultado;
 	}
+
 	function __construct() {
-		$this->miConfigurador = \Configurador::singleton ();
-		
-		$this->ruta = $this->miConfigurador->getVariableConfiguracion ( "rutaBloque" );
-		
-		$this->miMensaje = \Mensaje::singleton ();
-		
+		$this -> miConfigurador = \Configurador::singleton();
+
+		$this -> ruta = $this -> miConfigurador -> getVariableConfiguracion("rutaBloque");
+
+		$this -> miMensaje = \Mensaje::singleton();
+
 		$conexion = "aplicativo";
-		$this->miRecursoDB = $this->miConfigurador->fabricaConexiones->getRecursoDB ( $conexion );
-		
-		if (! $this->miRecursoDB) {
-			
-			$this->miConfigurador->fabricaConexiones->setRecursoDB ( $conexion, "tabla" );
-			$this->miRecursoDB = $this->miConfigurador->fabricaConexiones->getRecursoDB ( $conexion );
+		$this -> miRecursoDB = $this -> miConfigurador -> fabricaConexiones -> getRecursoDB($conexion);
+
+		if (!$this -> miRecursoDB) {
+
+			$this -> miConfigurador -> fabricaConexiones -> setRecursoDB($conexion, "tabla");
+			$this -> miRecursoDB = $this -> miConfigurador -> fabricaConexiones -> getRecursoDB($conexion);
 		}
 	}
-	public function setRuta($unaRuta) {
-		$this->ruta = $unaRuta;
-	}
-	function setSql($a) {
-		$this->sql = $a;
-	}
-	function setFuncion($funcion) {
-		$this->funcion = $funcion;
-	}
-	public function setLenguaje($lenguaje) {
-		$this->lenguaje = $lenguaje;
-	}
-	public function setFormulario($formulario) {
-		$this->formulario = $formulario;
-	}
-}
 
+	public function setRuta($unaRuta) {
+		$this -> ruta = $unaRuta;
+	}
+
+	function setSql($a) {
+		$this -> sql = $a;
+	}
+
+	function setFuncion($funcion) {
+		$this -> funcion = $funcion;
+	}
+
+	public function setLenguaje($lenguaje) {
+		$this -> lenguaje = $lenguaje;
+	}
+
+	public function setFormulario($formulario) {
+		$this -> formulario = $formulario;
+	}
+
+}
 ?>

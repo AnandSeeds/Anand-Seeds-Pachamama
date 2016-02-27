@@ -1,10 +1,10 @@
 <?php
 
-namespace gui\accesoIncorrecto;
+namespace servicioWeb;
 
-if (! isset ( $GLOBALS ["autorizado"] )) {
+if (!isset($GLOBALS["autorizado"])) {
 	include ("../index.php");
-	exit ();
+	exit();
 }
 
 include_once ("core/manager/Configurador.class.php");
@@ -15,19 +15,20 @@ include_once ("core/connection/Sql.class.php");
 class Sql extends \Sql {
 	var $miConfigurador;
 	function __construct() {
-		$this->miConfigurador = \Configurador::singleton ();
+		$this -> miConfigurador = \Configurador::singleton();
 	}
+
 	function getCadenaSql($tipo, $variable = "") {
-		
+
 		/**
 		 * 1.
 		 * Revisar las variables para evitar SQL Injection
 		 */
-		$prefijo = $this->miConfigurador->getVariableConfiguracion ( "prefijo" );
-		$idSesion = $this->miConfigurador->getVariableConfiguracion ( "id_sesion" );
-		
+		$prefijo = $this -> miConfigurador -> getVariableConfiguracion("prefijo");
+		$idSesion = $this -> miConfigurador -> getVariableConfiguracion("id_sesion");
+
 		switch ($tipo) {
-			
+
 			/**
 			 * Clausulas genéricas.
 			 * se espera que estén en todos los formularios
@@ -36,24 +37,23 @@ class Sql extends \Sql {
 			case "iniciarTransaccion" :
 				$cadenaSql = "START TRANSACTION";
 				break;
-			
+
 			case "finalizarTransaccion" :
 				$cadenaSql = "COMMIT";
 				break;
-			
+
 			case "cancelarTransaccion" :
 				$cadenaSql = "ROLLBACK";
 				break;
-			
+
 			case "eliminarTemp" :
-				
 				$cadenaSql = "DELETE ";
 				$cadenaSql .= "FROM ";
 				$cadenaSql .= $prefijo . "tempFormulario ";
 				$cadenaSql .= "WHERE ";
 				$cadenaSql .= "id_sesion = '" . $variable . "' ";
 				break;
-			
+
 			case "insertarTemp" :
 				$cadenaSql = "INSERT INTO ";
 				$cadenaSql .= $prefijo . "tempFormulario ";
@@ -65,20 +65,20 @@ class Sql extends \Sql {
 				$cadenaSql .= "fecha ";
 				$cadenaSql .= ") ";
 				$cadenaSql .= "VALUES ";
-				
-				foreach ( $_REQUEST as $clave => $valor ) {
+
+				foreach ($_REQUEST as $clave => $valor) {
 					$cadenaSql .= "( ";
 					$cadenaSql .= "'" . $idSesion . "', ";
-					$cadenaSql .= "'" . $variable ['formulario'] . "', ";
+					$cadenaSql .= "'" . $variable['formulario'] . "', ";
 					$cadenaSql .= "'" . $clave . "', ";
 					$cadenaSql .= "'" . $valor . "', ";
-					$cadenaSql .= "'" . $variable ['fecha'] . "' ";
+					$cadenaSql .= "'" . $variable['fecha'] . "' ";
 					$cadenaSql .= "),";
 				}
-				
-				$cadenaSql = substr ( $cadenaSql, 0, (strlen ( $cadenaSql ) - 1) );
+
+				$cadenaSql = substr($cadenaSql, 0, (strlen($cadenaSql) - 1));
 				break;
-			
+
 			case "rescatarTemp" :
 				$cadenaSql = "SELECT ";
 				$cadenaSql .= "id_sesion, ";
@@ -91,7 +91,7 @@ class Sql extends \Sql {
 				$cadenaSql .= "WHERE ";
 				$cadenaSql .= "id_sesion='" . $idSesion . "'";
 				break;
-			
+
 			/* Consultas del desarrollo */
 			case "facultad" :
 				$cadenaSql = "SELECT";
@@ -100,75 +100,57 @@ class Sql extends \Sql {
 				$cadenaSql .= " FROM ";
 				$cadenaSql .= " docencia.facultad";
 				break;
-				
+
 			case "registrarDato" :
-				$cadenaSql=" INSERT";
-				$cadenaSql.=" INTO";
-				$cadenaSql.=" modelo.dato";
-				$cadenaSql.=" (";
-				$cadenaSql.=" id_dispositivo,";
-				$cadenaSql.=" temperatura,";
-				$cadenaSql.=" humedad_relativa,";
-				$cadenaSql.=" radiacion_uv,";
-				$cadenaSql.=" dioxido_carbono,";
-				$cadenaSql.=" calidad_aire,";
-				$cadenaSql.=" humedad_suelo,";
-				$cadenaSql.=" latitud,";
-				$cadenaSql.=" longitud";
-				$cadenaSql.=" )";
-				$cadenaSql.=" VALUES";
-				$cadenaSql.=" (";
-				$cadenaSql.=" '" . $variable ['id_dispositivo'] . "',";
-				$cadenaSql.=" '" . $variable ['temp'] . "',";
-				$cadenaSql.=" '" . $variable ['hum'] . "',";
-				$cadenaSql.=" '" . $variable ['uv'] . "',";
-				$cadenaSql.=" '" . $variable ['co'] . "',";
-				$cadenaSql.=" '" . $variable ['cov'] . "',";
-				$cadenaSql.=" '" . $variable ['hs'] . "',";
-				$cadenaSql.=" '" . $variable ['gpslat'] . "',";
-				$cadenaSql.=" '" . $variable ['gpslog'] . "'";
-				$cadenaSql.=" );";
+				$cadenaSql = " INSERT";
+				$cadenaSql .= " INTO";
+				$cadenaSql .= " modelo.dato";
+				$cadenaSql .= " (";
+				$cadenaSql .= " id_dispositivo,";
+				$cadenaSql .= " temperatura,";
+				$cadenaSql .= " humedad_relativa,";
+				$cadenaSql .= " radiacion_uv,";
+				$cadenaSql .= " dioxido_carbono,";
+				$cadenaSql .= " calidad_aire,";
+				$cadenaSql .= " humedad_suelo,";
+				$cadenaSql .= " latitud,";
+				$cadenaSql .= " longitud";
+				$cadenaSql .= " )";
+				$cadenaSql .= " VALUES";
+				$cadenaSql .= " (";
+				$cadenaSql .= " '" . $variable['id_dispositivo'] . "',";
+				$cadenaSql .= " '" . $variable['temp'] . "',";
+				$cadenaSql .= " '" . $variable['hum'] . "',";
+				$cadenaSql .= " '" . $variable['uv'] . "',";
+				$cadenaSql .= " '" . $variable['co'] . "',";
+				$cadenaSql .= " '" . $variable['cov'] . "',";
+				$cadenaSql .= " '" . $variable['hs'] . "',";
+				$cadenaSql .= " '" . $variable['gpslat'] . "',";
+				$cadenaSql .= " '" . $variable['gpslog'] . "'";
+				$cadenaSql .= " );";
 				break;
-			
+
 			case 'consultarDatos' :
-				$cadenaSql=" SELECT";
-				$cadenaSql.=" temperatura AS temperatura,";
-				$cadenaSql.=" humedad_relativa AS humedad_relativa,";
-				$cadenaSql.=" nivel_ozono AS nivel_ozono,";
-				$cadenaSql.=" radiacion_uv AS radiacion_uv,";
-				$cadenaSql.=" dioxido_carbono AS dioxido_carbono,";
-				$cadenaSql.=" calidad_aire AS calidad_aire,";
-				$cadenaSql.=" humedad_suelo AS humedad_suelo,";
-				$cadenaSql.=" latitud AS latitud,";
-				$cadenaSql.=" longitud AS longitud";
-				$cadenaSql.=" FROM";
-				$cadenaSql.=" modelo.dato";
-				$cadenaSql.=" WHERE id_dispositivo='1'";
-				$cadenaSql.=" ORDER BY tiempo";
-				$cadenaSql.=" DESC LIMIT ".$variable ['limit'].";";
-				break;
-				
-			case "actualizarEvaluador" :
-				$cadenaSql=" UPDATE";
-				$cadenaSql.=" docencia.evaluador_produccion_tecnicaysoftware";
-				$cadenaSql.=" SET";
-				$cadenaSql.=" documento_evaluador = '" . $variable ['documento_evaluador'] . "',";
-				$cadenaSql.=" nombre = '" . $variable ['nombre'] . "',";
-				$cadenaSql.=" numero_certificado = '" . $variable ['numero_certificado'] . "',";
-				$cadenaSql.=" documento_docente = '" . $variable ['documento_docente'] . "',";
-				$cadenaSql.=" id_universidad = '" . $variable ['id_universidad'] . "',";
-				$cadenaSql.=" puntaje = '" . $variable ['puntaje'] . "',";
-				$cadenaSql.=" normatividad = '" . $variable ['normatividad'] . "'";
-				$cadenaSql.=" WHERE";
-				$cadenaSql.=" documento_evaluador = '" . $variable ['old_documento_evaluador'] . "'";
-				$cadenaSql.=" AND numero_certificado = '" . $variable ['old_numero_certificado'] . "'";
-				$cadenaSql.=" AND documento_docente = '" . $variable ['old_documento_docente'] . "'";
-				$cadenaSql.=" ;";
+				$cadenaSql = " SELECT";
+				$cadenaSql .= " temperatura AS temperatura,";
+				$cadenaSql .= " humedad_relativa AS humedad_relativa,";
+				$cadenaSql .= " nivel_ozono AS nivel_ozono,";
+				$cadenaSql .= " radiacion_uv AS radiacion_uv,";
+				$cadenaSql .= " dioxido_carbono AS dioxido_carbono,";
+				$cadenaSql .= " calidad_aire AS calidad_aire,";
+				$cadenaSql .= " humedad_suelo AS humedad_suelo,";
+				$cadenaSql .= " latitud AS latitud,";
+				$cadenaSql .= " longitud AS longitud";
+				$cadenaSql .= " FROM";
+				$cadenaSql .= " modelo.dato";
+				$cadenaSql .= " WHERE id_dispositivo='1'";
+				$cadenaSql .= " ORDER BY tiempo";
+				$cadenaSql .= " DESC LIMIT " . $variable['limit'] . ";";
 				break;
 		}
-		
+
 		return $cadenaSql;
 	}
-}
 
+}
 ?>
