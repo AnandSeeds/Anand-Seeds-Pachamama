@@ -54,6 +54,7 @@ class Redireccionador {
 
             default :
                 $variable = 'pagina=' . $miPaginaActual;
+				$variable .= '&error=true';
                 break;
         }
         foreach ($_REQUEST as $clave => $valor) {

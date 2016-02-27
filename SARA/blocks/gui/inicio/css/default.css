@@ -128,6 +128,7 @@ button,
 input {
     font-family: "Clear Sans", Helvetica, Arial, sans-serif;
     line-height: normal;
+    padding-left: 10px;
 }
 button,
 select {
@@ -2286,7 +2287,7 @@ not all,
 .success {
     border-radius: 2px;
     color: #fff;
-    display: none;
+    /*display: none;*/
     margin-bottom: 5px;
     padding: 5px;
     position: relative;

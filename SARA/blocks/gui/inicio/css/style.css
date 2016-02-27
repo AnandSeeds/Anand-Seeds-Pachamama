@@ -258,3 +258,9 @@ aside {
   }
 }
 
+.responsive-slider {
+	position: relative;
+	top: -663px;
+	height: 0;
+}
+
