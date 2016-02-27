@@ -68,30 +68,13 @@ float HS;
 int uvLevel;
 int refLevel;
 float outputVoltage;
-volatile float uvIntensity;
+float uvIntensity;
 
 // Hardware pin definitions MP8511
 int UVOUT = A0; // Output from the sensor
 int REF_3V3 = A1; // 3.3V power on the Arduino board
 
 /****** FIN UV ******/
-
-/****** INICIO GASES ******/
-float CO, COV;
-/****** FIN GASES ******/
-
-/****** INICIO MP ******/
-float MP;
-int measurePin = A5;
-
-int samplingTime = 280;
-int deltaTime = 40;
-int sleepTime = 9680;
-
-float voMeasured = 0;
-float calcVoltage = 0;
-float dustDensity = 0;
-/****** FIN MP ******/
 
 /****** INICIO CONTROL DE LECTURAS ******/
 unsigned long time;
@@ -110,7 +93,8 @@ int lastInt = millis();
 // File myFile;
 /****** FIN MODULO SIM ******/
 #include <SoftwareSerial.h>
-SoftwareSerial sim800l(3,4); //RX - TX
+SoftwareSerial sim800l(17,16); //RX - TX
+
 /****** INICIO MODULO SIM ******/
 
 // #include <SD.h>
@@ -581,8 +565,28 @@ void enviarDatosSIM() {
 //        +"&hs="+ String(HS)
 //        +"&gpslat="+String(latitude)
 //        +"&gpslog="+ String(longitude));
-        //sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=1&ts=1&ta=1&hs=1&hr=1&nuv=1&iuv=1&lat=10&log=10 HTTP/1.1");
-        sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N");
+        static char ts[15];
+        dtostrf(TempC, 7, 3, ts);  // dtostrf(var, characters long, characters after the decimal point,array to save)
+        static char ta[15];
+        dtostrf(t,7, 3, ta);
+        static char hs[15];
+        dtostrf(HS,7, 3, hs);
+        static char hr[15];
+        dtostrf(h,7, 3, hr);
+        static char iuv[15];
+        dtostrf(uvIntensity,7, 3, iuv);
+        sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=222222&ts="
+        +String(ts)
+        +"&ta="+String(ta)
+        +"&hs="+String(hs)
+        +"&hr="+String(hr)
+        +"&nuv="+String(uvLevel)
+        +"&iuv="+String(iuv)
+        +"&lat="+String(latit)
+        +"&lon="+String(longi)
+        );      
+        //+floatTempC, 2, 2, 10))//+"&ta="+dtostrf(t, 2, 2, 10)+"&hs="+dtostrf(HS, 2, 2, 10)+"&hr="+dtostrf(h, 2, 2, 10)+"&nuv="+/*String(uvLevel)+*/"&iuv="+dtostrf(uvIntensity, 2, 2, 10)/*+"&lat="+latit+"&log="+longi*/);
+        //sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N");
         //sim800l.println("Host: 107.170.208.9");
         //+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)
         //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)); 
