@@ -12,6 +12,29 @@ virtuabotixRTC myRTC(21, 20, 19); // CLK,DAT,RST -- SCLK -> 21, I/O -> 20, CE ->
 
 /****** FIN MODULO RELOJ ******/
 
+/***** INICIO KEYBOARD *****/
+#include <Keypad.h> 
+const byte ROWS = 4; // four rows
+const byte COLS = 4; // three columns
+
+char keys[ROWS][COLS] = { { '1', '2', '3', 'A' }, 
+                          { '4', '5', '6', 'B' }, 
+                          { '7', '8', '9', 'C' }, 
+                          { '*', '0', '#', 'D' } };
+
+byte rowPins[ROWS] = { 45, 43, 41, 39 }; // connect to the row pinouts of the keypad
+byte colPins[COLS] = { 53, 51, 49, 47 }; // connect to the column pinouts of the keypad
+
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
+
+int posicion = 0;
+const char clave[] = "ABCD9903";
+const int tamannoClave = strlen(clave);
+char passin[tamannoClave - 1];//indice 3 denota 4 elementos 0,1,2,3...
+int led = 5;
+int intentos = 10;
+/***** FIN KEYBOARD *****/
+
 /***** INICIO LCD ******/
 
 #include <LiquidCrystal.h>
@@ -105,7 +128,10 @@ SoftwareSerial sim800l(17,16); //RX - TX
  * FUNCION DE CONFIGURACION INICIAL
  */
 void setup() {
-
+        pinMode(led, OUTPUT);
+        lcd.begin(16, 2);
+        lcd.print("Ingresa el pass");
+        while(!cargarClave()){}
 	// Wire.begin();
 	// RTC.begin();
 	// Si quitamos el comentario de la linea siguiente, se ajusta la hora
@@ -145,7 +171,7 @@ void setup() {
 	pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
 	pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
 
-	lcd.begin(16, 2);
+	
 
 	// Antirebote para pulsador por software
 	attachInterrupt(0, SetPoint, FALLING);
@@ -640,5 +666,71 @@ char c='\0';
 return cad;
 }
 
+/*
+*  Funcion acceso por teclado matricial
+*/
+
+boolean cargarClave() {
+	char key = keypad.getKey();
+	if (key) {
+		if (posicion == tamannoClave - 1) {
+                        lcd.setCursor(posicion, 1);
+                        passin[posicion] = key;
+			// print the number of seconds since reset:
+			lcd.print(key);
+			boolean iguales = true;
+                        for (int i = 0; i < sizeof(clave); i++) {
+                          if(passin[i] == clave[i]){
+                            iguales = iguales && true;
+                          } else {
+                            iguales = iguales && false;
+                          }
+                        }
+			if (iguales) {
+				lcd.setCursor(0, 0);
+				lcd.print("....Cargando....");
+                                lcd.setCursor(0, 1);
+                                lcd.print("                ");
+				digitalWrite(led, HIGH);
+//				for (int positionCounter = 0; positionCounter < 13; positionCounter++) {
+//					lcd.setCursor(0, 1);
+//					lcd.print("....Bienvenido #UKHackathonAgro");
+//					lcd.scrollDisplayLeft();
+//					delay(500);
+//				}
+//
+//				for (int positionCounter = 0; positionCounter < 29; positionCounter++) {
+//					lcd.setCursor(0, 1);
+//					lcd.scrollDisplayLeft();
+//					delay(500);
+//				}
+                                return true;
+			} else {
+				lcd.setCursor(0, 0);
+				lcd.print("Intenta de nuevo...");
+				lcd.setCursor(0, 1);
+				lcd.print("               ");
+
+				if (intentos <= 0) {
+					lcd.setCursor(0, 0);
+					lcd.print("Reinicie el sistema");
+					while (true) {
+					};
+				} else {
+					intentos--;
+					posicion = 0;
+				}
+			}
+		} else {
+			lcd.setCursor(posicion, 1);
+			// print the number of seconds since reset:
+			lcd.print(key);
+			passin[posicion] = key;
+			posicion++;
+		}
+
+	}
+        return false;
+}
 
 /****** FIN FUNCIONES ADICIONALES ******/
