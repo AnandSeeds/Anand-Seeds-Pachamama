@@ -269,8 +269,8 @@ void GetGPS() {
 		Serial.println("");
 	}
 
-	dtostrf(latitude, 6, 6, latit);
-	dtostrf(longitude, 6, 6, longi);
+	dtostrf(latitude, 0, 6, latit);
+	dtostrf(longitude, 0, 6, longi);
 	Serial.println(latit);
 	Serial.println(longi);
 }
@@ -566,16 +566,16 @@ void enviarDatosSIM() {
 //        +"&gpslat="+String(latitude)
 //        +"&gpslog="+ String(longitude));
         static char ts[15];
-        dtostrf(TempC, 7, 3, ts);  // dtostrf(var, characters long, characters after the decimal point,array to save)
+        dtostrf(TempC, 0, 3, ts);  // dtostrf(var, characters long, characters after the decimal point,array to save)
         static char ta[15];
-        dtostrf(t,7, 3, ta);
+        dtostrf(t, 0, 3, ta);
         static char hs[15];
-        dtostrf(HS,7, 3, hs);
+        dtostrf(HS, 0, 3, hs);
         static char hr[15];
-        dtostrf(h,7, 3, hr);
+        dtostrf(h, 0, 3, hr);
         static char iuv[15];
-        dtostrf(uvIntensity,7, 3, iuv);
-        sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=222222&ts="
+        dtostrf(uvIntensity, 0, 3, iuv);
+        String cadena = "GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=222222&ts="
         +String(ts)
         +"&ta="+String(ta)
         +"&hs="+String(hs)
@@ -583,8 +583,9 @@ void enviarDatosSIM() {
         +"&nuv="+String(uvLevel)
         +"&iuv="+String(iuv)
         +"&lat="+String(latit)
-        +"&lon="+String(longi)
-        );      
+        +"&lon="+String(longi);
+        Serial.println(cadena);
+        sim800l.println(cadena);      
         //+floatTempC, 2, 2, 10))//+"&ta="+dtostrf(t, 2, 2, 10)+"&hs="+dtostrf(HS, 2, 2, 10)+"&hr="+dtostrf(h, 2, 2, 10)+"&nuv="+/*String(uvLevel)+*/"&iuv="+dtostrf(uvIntensity, 2, 2, 10)/*+"&lat="+latit+"&log="+longi*/);
         //sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N");
         //sim800l.println("Host: 107.170.208.9");
