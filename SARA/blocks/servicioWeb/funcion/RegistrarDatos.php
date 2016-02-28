@@ -26,19 +26,24 @@ class RegistrarDatos {
 
 	function procesarFormulario() {
 
-		$conexion = "modelo";
+		$conexion = "modelo_emplazamiento";
 		$esteRecursoDB = $this -> miConfigurador -> fabricaConexiones -> getRecursoDB($conexion);
 
-		$esteBloque = $this -> miConfigurador -> getVariableConfiguracion("esteBloque");
+		// $esteBloque = $this -> miConfigurador -> getVariableConfiguracion("esteBloque");
+		// $rutaBloque = $this -> miConfigurador -> getVariableConfiguracion("raizDocumento") . "/blocks/asignacionPuntajes/salariales/";
+		// $rutaBloque .= $esteBloque['nombre'];
 
-		$rutaBloque = $this -> miConfigurador -> getVariableConfiguracion("raizDocumento") . "/blocks/asignacionPuntajes/salariales/";
-
-		$rutaBloque .= $esteBloque['nombre'];
-
-		$host = $this -> miConfigurador -> getVariableConfiguracion("host") . $this -> miConfigurador -> getVariableConfiguracion("site") . "/blocks/asignacionPuntajes/salariales/" . $esteBloque['nombre'];
-
+		//$host = $this -> miConfigurador -> getVariableConfiguracion("host") . $this -> miConfigurador -> getVariableConfiguracion("site") . "/blocks/asignacionPuntajes/salariales/" . $esteBloque['nombre'];
+		// $_REQUEST['id'] = '1';
+		// $_REQUEST['ts'] = '1';
+		// $_REQUEST['ta'] = '1';
+		// $_REQUEST['hs'] = '1';
+		// $_REQUEST['hr'] = '1';
+		// $_REQUEST['nuv'] = '1';
+		// $_REQUEST['iuv'] = '1';
+		// $_REQUEST['lat'] = '10';
+		// $_REQUEST['lon'] = '10';
 		$cadenaSql = $this -> miSql -> getCadenaSql('registrarDato', $_REQUEST);
-
 		$resultado = $esteRecursoDB -> ejecutarAcceso($cadenaSql, "insertar");
 		exit();
 		if ($resultado) {

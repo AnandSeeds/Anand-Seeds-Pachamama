@@ -44,7 +44,7 @@ class Funcion {
 	}
 
 	function action() {
-		$resultado = true;
+		//$resultado = true;
 
 		// Aquí se coloca el código que procesará los diferentes formularios que pertenecen al bloque
 		// aunque el código fuente puede ir directamente en este script, para facilitar el mantenimiento
@@ -52,7 +52,7 @@ class Funcion {
 		// en la carpeta funcion
 
 		// Importante: Es adecuado que sea una variable llamada opcion o action la que guie el procesamiento:
-
+		//var_dump($_REQUEST);die('Hello');
 		if (isset($_REQUEST['opcion'])) {
 			switch ($_REQUEST ['opcion']) {
 				case 'registrarDatos' :
