@@ -7,7 +7,7 @@
 					
 					<header>
 						<h1 id="fxa-signin-header">
-							Red de Monitoreo de Condiciones Ambientales <span class="service">Ingrese sus datos</span></h1>
+							¿Desea probar? <span class="service">Ingrese sus datos</span></h1>
 					</header>
 							<section>
 
