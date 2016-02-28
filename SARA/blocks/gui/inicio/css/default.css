@@ -649,7 +649,7 @@ html.iframe {
     display: none;
 }
 #udistrital-logo {
-    background-image: url("img/anandseeds.png");
+    background-image: url("img/anandseeds3.png");
     background-size: auto 200px;
     opacity: 0;
     position: relative;
@@ -725,10 +725,10 @@ not all,
 not all,
 (min-resolution: 1.3dppx) {
     #udistrital-logo {
-        background-image: url("img/anandseeds.png");
+        background-image: url("img/anandseeds3.png");
     }
     #choose-what-to-sync-graphic {
-        background-image: url("img/anandseeds.png");
+        background-image: url("img/anandseeds3.png");
     }
 }
 @media (min-width: 521px) and (min-height: 481px) {

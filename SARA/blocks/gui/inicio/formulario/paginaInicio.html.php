@@ -11,7 +11,7 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 				<div style="opacity: 1;" class="fade-in-forward" id="udistrital-logo"></div>
 
 				<header>
-					<h1 id="fxa-signin-header"> Red de Monitoreo de Condiciones Ambientales <span class="service">Ingrese sus datos</span></h1>
+					<h1 id="fxa-signin-header"> Sistema de Monitoreo, Control y Comercialización de Bienes Agrícolas. <span class="service">Ingrese sus datos</span></h1>
 				</header>
 
 				<section>					

@@ -12,10 +12,10 @@ class Form {
 	var $lenguaje;
 	var $miFormulario;
 	var $site;
-	
+
 	function __construct($lenguaje, $formulario) {
 		$this -> miConfigurador = \Configurador::singleton();
-		
+
 		$this -> miInspectorHTML = \InspectorHTML::singleton();
 
 		$this -> miConfigurador -> fabricaConexiones -> setRecursoDB('principal');
@@ -23,57 +23,56 @@ class Form {
 		$this -> lenguaje = $lenguaje;
 
 		$this -> miFormulario = $formulario;
-		
-		$this -> site = $this->miConfigurador->getVariableConfiguracion ( "rutaBloque" );
+
+		$this -> site = $this -> miConfigurador -> getVariableConfiguracion("rutaBloque");
 	}
 
 	function miForm() {
 		// Rescatar los datos de este bloque
-		$esteBloque = $this->miConfigurador->getVariableConfiguracion ( "esteBloque" );
-        // ---------------- SECCION: Parámetros Globales del Formulario ----------------------------------
-        /**
-        * Atributos que deben ser aplicados a todos los controles de este formulario.
-        * Se utiliza un arreglo
-        * independiente debido a que los atributos individuales se reinician cada vez que se declara un campo.
-        *
-        * Si se utiliza esta técnica es necesario realizar un mezcla entre este arreglo y el específico en cada control:
-        * $atributos= array_merge($atributos,$atributosGlobales);
-        */
-        $atributosGlobales ['campoSeguro'] = 'tiempo';
-        $_REQUEST['tiempo']=time();
+		$esteBloque = $this -> miConfigurador -> getVariableConfiguracion("esteBloque");
+		// ---------------- SECCION: Parámetros Globales del Formulario ----------------------------------
+		/**
+		 * Atributos que deben ser aplicados a todos los controles de este formulario.
+		 * Se utiliza un arreglo
+		 * independiente debido a que los atributos individuales se reinician cada vez que se declara un campo.
+		 *
+		 * Si se utiliza esta técnica es necesario realizar un mezcla entre este arreglo y el específico en cada control:
+		 * $atributos= array_merge($atributos,$atributosGlobales);
+		 */
+		$atributosGlobales['campoSeguro'] = 'tiempo';
+		$_REQUEST['tiempo'] = time();
 		// Rescatar los datos de este bloque
-		$directorio = $this->miConfigurador->getVariableConfiguracion ( "host" );
-		$directorio .= $this->miConfigurador->getVariableConfiguracion ( "site" ) . "/index.php?";
-		$directorio .= $this->miConfigurador->getVariableConfiguracion ( "enlace" );
-		
+		$directorio = $this -> miConfigurador -> getVariableConfiguracion("host");
+		$directorio .= $this -> miConfigurador -> getVariableConfiguracion("site") . "/index.php?";
+		$directorio .= $this -> miConfigurador -> getVariableConfiguracion("enlace");
+
 		$enlace = 'pagina=registroEmplazamiento';
-		$enlace = $this->miConfigurador->fabricaConexiones->crypto->codificar_url ( $enlace, $directorio );
-		
+		$enlace = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace, $directorio);
+
 		$claseEnlaceInicio = '';
 		$claseEnlaceEmplazamiento = '';
 		$claseEnlaceOtros = '';
 		$claseEnlaceAcercaDe = '';
-		
 
 		switch ($_REQUEST['pagina']) {
-			case 'emplazamientosUsuario':
+			case 'emplazamientosUsuario' :
 				$claseEnlaceEmplazamiento = 'class="active"';
 				break;
-			case 'acercaDe':
+			case 'acercaDe' :
 				$claseEnlaceAcercaDe = 'class="active last"';
 				break;
-			case 2:
+			case 2 :
 				echo "i equals 2";
 				break;
 		}
 
-		echo '<div id="cssmenu">
-		<ul>
-		   <li '.$claseEnlaceEmplazamiento.'><a href="/index.php"><span>Mis emplazamientos</span></a></li>
-		   <li><a href="'.$enlace.'"><span>Registrar Emplazamiento</span></a></li>
-		   <li><a href="http://107.170.208.9:8787"><span>Otros</span></a></li>
-		   <li '.$claseEnlaceAcercaDe.'><a href="http://anandseeds.co/"><span>Acerca de</span></a></li>
-		</ul>
+		echo '
+		<div id="cssmenu">
+			<ul>
+			   <li ' . $claseEnlaceEmplazamiento . '><a href="/index.php"><span>Mis emplazamientos</span></a></li>
+			   <li><a href="' . $enlace . '"><span>Registrar Emplazamiento</span></a></li>
+			   <li ' . $claseEnlaceAcercaDe . '><a target="_blank" href="http://anandseeds.co/"><span>Acerca de</span></a></li>
+			</ul>
 		</div>';
 	}
 

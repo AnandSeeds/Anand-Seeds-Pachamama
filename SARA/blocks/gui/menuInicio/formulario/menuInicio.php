@@ -58,7 +58,6 @@ class Form {
 		echo '<div id="cssmenu">
 		<ul>
 		   <li '.$claseEnlaceInicio.'><a href="/index.php"><span>inicio</span></a></li>
-		   <li><a href="http://107.170.208.9:8787"><span>Otros</span></a></li>
 		   <li '.$claseEnlaceAcercaDe.'><a href="http://anandseeds.co/"><span>Acerca de</span></a></li>
 		</ul>
 		</div>';
