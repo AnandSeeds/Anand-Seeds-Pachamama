@@ -9,7 +9,7 @@
 // Registrar los archvos js que deben incluirse
 
 $indice=-1;
-//$funcion[$indice++]='script.js';
+$funcion[$indice++]='script.js';
 $funcion = array();
 
 $rutaBloque=$this->miConfigurador->getVariableConfiguracion("host");

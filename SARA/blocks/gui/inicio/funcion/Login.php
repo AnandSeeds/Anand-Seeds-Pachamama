@@ -58,19 +58,9 @@ class FormProcessor {
 				if ($registro[0]['clave'] == $variable["clave"]) {
 					// 1. Crear una sesión de trabajo
 					$estaSesion = $this -> miSesion -> crearSesion($registro[0]["id_usuario"]);
-
-					$arregloLogin = array('autenticacionExitosa', $registro[0]["id_usuario"], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
-
-					$argumento = json_encode($arregloLogin);
-					$arreglo = array($registro[0]["id_usuario"], $argumento);
-
-					// var_dump ( $arreglo );
-					//$cadena_sql = $this->miSql->getCadenaSql("registrarEvento", $arreglo);
-					//$registroAcceso = $esteRecursoDB->ejecutarAcceso($cadena_sql, "acceso");
-
+					
 					if ($estaSesion) {
-						$log = array('accion' => "INGRESO", 'id_registro' => $variable['usuario'] . "|" . $estaSesion, 'tipo_registro' => "LOGIN", 'nombre_registro' => $arreglo[1], 'descripcion' => "Ingreso al sistemas del usuario " . $variable['usuario'] . " con la sesion " . $estaSesion, );
-						//            var_dump($log);
+						//var_dump($log);
 						$_COOKIE["aplicativo"] = $estaSesion;
 						//$this->miLogger->log_usuario($log);
 						//Si estado dif Activo redirecciona a pagina decambio contraseña
@@ -88,26 +78,14 @@ class FormProcessor {
 					//                    echo "no valido";
 					//                    exit;
 					// Registrar el error por clave no válida
-					$arregloLogin = array('claveNoValida', $variable['usuario'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
 				}
 			} else {
-
 				// Registrar el error por usuario no valido
-				$arregloLogin = array('usuarioNoValido', $variable['usuario'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
 			}
 		} else {
-
 			// Registrar evento por tiempo de expiración en controles
-			$arregloLogin = array('formularioExpirado', $variable['usuario'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']);
 		}
 
-		$argumento = json_encode($arregloLogin);
-		$arreglo = array($registro[0]["id_usuario"], $argumento);
-
-		Redireccionador::redireccionar('indexito2');
-		die ;
-		//$cadena_sql = $this->miSql->getCadenaSql("registrarEvento", $arreglo);
-		//$registroAcceso = $esteRecursoDB->ejecutarAcceso($cadena_sql, "acceso");
 	}
 
 }

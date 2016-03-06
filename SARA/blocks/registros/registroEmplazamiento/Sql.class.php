@@ -168,29 +168,72 @@ class Sql extends \Sql {
 				$cadenaSql.=" id_tipo_emplazamiento,";
 				$cadenaSql.=" nombre";
 				$cadenaSql.=" FROM";
-				$cadenaSql.=" modelo.tipo_emplazamiento";
+				$cadenaSql.=" modelo_emplazamiento.tipo_emplazamiento";
 				$cadenaSql.=" ;";
 				break;
 			
 			case "registrarEmplazamiento" :
 				$cadenaSql=" INSERT INTO";
-				$cadenaSql.=" modelo.emplazamiento";
+				$cadenaSql.=" modelo_emplazamiento.emplazamiento";
 				$cadenaSql.=" (";
 				$cadenaSql.=" id_usuario,";
 				$cadenaSql.=" id_tipo_emplazamiento,";
+				//$cadenaSql.=" id_huerta,";
 				$cadenaSql.=" foto,";
 				$cadenaSql.=" descripcion,";
-				$cadenaSql.=" id_dispositivo";
+				$cadenaSql.=" ubicacion";
 				$cadenaSql.=" )";
 				$cadenaSql.=" VALUES";
 				$cadenaSql.=" (";
 				$cadenaSql.=" '" . $variable ['id_usuario'] . "',";
 				$cadenaSql.=" '" . $variable ['id_tipo_emplazamiento'] . "',";
-				$cadenaSql.=" '" . $variable ['foto'] . "',";
+				//$cadenaSql.=" '" . $variable ['id_huerta'] . "',";
+				$cadenaSql.=" '" . $variable ['imagen'] . "',";
 				$cadenaSql.=" '" . $variable ['descripcion'] . "',";
+				$cadenaSql .= " public.ST_GeomFromText('POINT(" . $variable['latitud'] . ' ' . $variable['longitud'] . ")', 26910)";
+				$cadenaSql.=" )";				
+				$cadenaSql.=" RETURNING id_emplazamiento AS id_emplazamiento";
+				$cadenaSql.=" ;";
+				break;
+			
+			case "registrarHuerta" :
+				$cadenaSql=" INSERT INTO";
+				$cadenaSql.=" modelo_emplazamiento.emplazamiento";
+				$cadenaSql.=" (";
+				$cadenaSql.=" id_usuario,";
+				$cadenaSql.=" id_tipo_emplazamiento,";
+				$cadenaSql.=" id_huerta,";
+				$cadenaSql.=" foto,";
+				//$cadenaSql.=" descripcion,";
+				$cadenaSql.=" ubicacion";
+				$cadenaSql.=" )";
+				$cadenaSql.=" VALUES";
+				$cadenaSql.=" (";
+				$cadenaSql.=" '" . $variable ['id_usuario'] . "',";
+				$cadenaSql.=" '" . $variable ['id_tipo_emplazamiento'] . "',";
+				$cadenaSql.=" '" . $variable ['id_huerta'] . "',";
+				$cadenaSql.=" '" . $variable ['imagen'] . "',";
+				//$cadenaSql.=" '" . $variable ['descripcion'] . "',";
 				$cadenaSql.=" '" . $variable ['id_dispositivo'] . "'";
 				$cadenaSql.=" )";
+				$cadenaSql.=" RETURNING id_emplazamiento AS id_emplazamiento";
 				$cadenaSql.=" ;";
+				break;
+			
+			case "registrarDispositivo" :
+				$cadenaSql=" INSERT INTO modelo_emplazamiento.dispositivo";
+				$cadenaSql.=" (";
+				$cadenaSql.=" id_usuario,";
+				//$cadenaSql.=" id_dispositivo,";
+				$cadenaSql.=" id_emplazamiento ";
+				$cadenaSql.=" )";
+				$cadenaSql.=" VALUES (";
+				$cadenaSql.=" '" . $variable ['id_usuario'] . "',";
+				//$cadenaSql.=" '" . $variable ['id_dispositivo'] . "',";
+				$cadenaSql.=" '" . $variable ['id_emplazamiento'] . "'";
+				$cadenaSql.=" )";
+				$cadenaSql.=" RETURNING id_dispositivo AS id_dispositivo";
+				$cadenaSql.=" ; ";
 				break;
 				
 			case "botonRegistrar" :

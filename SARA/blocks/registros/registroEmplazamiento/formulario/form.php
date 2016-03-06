@@ -31,7 +31,7 @@ class FormularioRegistro {
 		 * que lo complementan.
 		 */
 
-		$conexion = "modelo";
+		$conexion = "modelo_emplazamiento";
 		$esteRecursoDB = $this->miConfigurador->fabricaConexiones->getRecursoDB ( $conexion );
 
 		// Rescatar los datos de este bloque
@@ -173,36 +173,36 @@ class FormularioRegistro {
 		// ----------------FIN CONTROL: Campo de insertar imagen--------------------------------------------------------
 	
 		// ----------------INICIO CONTROL: Campo de Texto id dispositivo--------------------------------------------------------
-		$esteCampo = 'id_dispositivo';
-		$atributos ['id'] = $esteCampo;
-		$atributos ['nombre'] = $esteCampo;
-		$atributos ['tipo'] = 'text';
-		$atributos ['estilo'] = 'jqueryui';
-		$atributos ['marco'] = true;
-		$atributos ['estiloMarco'] = '';
-		$atributos ['etiquetaObligatorio'] = true;
-		$atributos ['columnas'] = 1;
-		$atributos ['dobleLinea'] = 0;
-		$atributos ['tabIndex'] = $tab;
-		$atributos ['etiqueta'] = $this->lenguaje->getCadena ( $esteCampo );
-		$atributos ['validar'] = 'required, custom[onlyNumberSp], maxSize[15]';
-
-		if (isset ( $_REQUEST [$esteCampo] )) {
-			$atributos ['valor'] = $_REQUEST [$esteCampo];
-		} else {
-			$atributos ['valor'] = '';
-		}
-		$atributos ['titulo'] = $this->lenguaje->getCadena ( $esteCampo . 'Titulo' );
-		$atributos ['deshabilitado'] = false;
-		$atributos ['tamanno'] = 57;
-		$atributos ['maximoTamanno'] = '15';
-		$atributos ['anchoEtiqueta'] = 280;
-		$tab ++;
-
-		// Aplica atributos globales al control
-		$atributos = array_merge ( $atributos, $atributosGlobales );
-		echo $this->miFormulario->campoCuadroTexto ( $atributos );
-		unset ( $atributos );
+		// $esteCampo = 'id_dispositivo';
+		// $atributos ['id'] = $esteCampo;
+		// $atributos ['nombre'] = $esteCampo;
+		// $atributos ['tipo'] = 'text';
+		// $atributos ['estilo'] = 'jqueryui';
+		// $atributos ['marco'] = true;
+		// $atributos ['estiloMarco'] = '';
+		// $atributos ['etiquetaObligatorio'] = true;
+		// $atributos ['columnas'] = 1;
+		// $atributos ['dobleLinea'] = 0;
+		// $atributos ['tabIndex'] = $tab;
+		// $atributos ['etiqueta'] = $this->lenguaje->getCadena ( $esteCampo );
+		// $atributos ['validar'] = 'required, custom[onlyNumberSp], maxSize[15]';
+// 
+		// if (isset ( $_REQUEST [$esteCampo] )) {
+			// $atributos ['valor'] = $_REQUEST [$esteCampo];
+		// } else {
+			// $atributos ['valor'] = '';
+		// }
+		// $atributos ['titulo'] = $this->lenguaje->getCadena ( $esteCampo . 'Titulo' );
+		// $atributos ['deshabilitado'] = false;
+		// $atributos ['tamanno'] = 57;
+		// $atributos ['maximoTamanno'] = '15';
+		// $atributos ['anchoEtiqueta'] = 280;
+		// $tab ++;
+// 
+		// // Aplica atributos globales al control
+		// $atributos = array_merge ( $atributos, $atributosGlobales );
+		// echo $this->miFormulario->campoCuadroTexto ( $atributos );
+		// unset ( $atributos );
 		// ----------------FIN CONTROL: Campo de Texto id dispositivo--------------------------------------------------------
 
 		// ----------------INICIO CONTROL: Campo de Texto descripción--------------------------------------------------------

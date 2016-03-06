@@ -37,7 +37,7 @@ class ConsultarDatos {
 		$host = $this -> miConfigurador -> getVariableConfiguracion("host") . $this -> miConfigurador -> getVariableConfiguracion("site") . "/blocks/asignacionPuntajes/salariales/" . $esteBloque['nombre'];
 
 		$cadenaSql = $this -> miSql -> getCadenaSql('consultarDatos', $_REQUEST);
-
+		
 		$resultado = $esteRecursoDB -> ejecutarAcceso($cadenaSql, "busqueda");
 		echo json_encode($resultado);
 		exit();

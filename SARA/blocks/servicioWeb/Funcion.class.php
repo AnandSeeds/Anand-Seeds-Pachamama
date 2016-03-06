@@ -61,6 +61,9 @@ class Funcion {
 				case 'consultarDatos' :
 					include ($this -> ruta . '/funcion/ConsultarDatos.php');
 					break;
+				case 'consultarPosicion' :
+					include ($this -> ruta . '/funcion/ConsultarPosicion.php');
+					break;
 			}
 		} else {
 			$_REQUEST['opcion'] = "mostrar";

@@ -14,10 +14,17 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 					<h1 id="fxa-signin-header"> Sistema de Monitoreo, Control y Comercialización de Bienes Agrícolas. <span class="service">Ingrese sus datos</span></h1>
 				</header>
 
-				<section>					
+				<section>
 					<?php if(isset($_REQUEST['error'])):?>
-						<div class="error">Usuario o contraseña erronea.</div>
-					<?php endif;?>					
+					<div class="error">
+						Usuario o contraseña erronea.
+					</div>
+					<?php endif; ?>
+					<?php if(isset($_REQUEST['mostrarMensaje']) && $_REQUEST['mostrarMensaje'] == 'sesionExpirada'):?>
+					<div class="error">
+						¡¡¡Sesión Expirada!!!
+					</div>
+					<?php endif; ?>
 					<div class="success"></div>
 					<?php
 					// ---------------- SECCION: Parámetros Generales del Formulario ----------------------------------
@@ -158,10 +165,23 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 					<div class="privacy-links">
 						Al continuar, estás de acuerdo con los <a id="fxa-tos" href="otro_pdf.pdf" target="_blank">Términos del servicio</a> del Sistema.
 					</div>
-
 				</section>
 			</div>
 		</div>
+	</div>
+
+	<div style="width: 100%;">
+		<ul class="social-icons">
+			<li class="icon icon--facebook">
+				<a href="http://facebook.com/anandseeds"> <span class="icon__name">Facebook</span> </a>
+			</li>
+			<li class="icon icon--twitter">
+				<a href="https://twitter.com/AnandSeeds"> <span class="icon__name">Twitter</span> </a>
+			</li>
+			<li>
+				<a href="https://www.youtube.com/channel/UC961fU1OYyv4lASjLpixzfA" target="_blank"> <i class="fa fa-youtube"></i> </a>
+			</li>
+		</ul>
 	</div>
 	<!--[if !(IE) | (gte IE 10)]><!-->
 	<noscript>

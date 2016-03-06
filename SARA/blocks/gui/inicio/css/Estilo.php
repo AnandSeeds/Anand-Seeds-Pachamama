@@ -7,6 +7,7 @@ $indice = 0;
 $estilo [$indice++] = "jquery.bxslider.css";
 $estilo [$indice++] = "default.css";
 $estilo [$indice++] = "style.css";
+$estilo [$indice++] = "style2.css";
 //$estilo = array();
 
 $rutaBloque = $this->miConfigurador->getVariableConfiguracion ( "host" );

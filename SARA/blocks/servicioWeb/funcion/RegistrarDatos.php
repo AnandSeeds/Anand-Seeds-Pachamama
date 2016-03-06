@@ -45,6 +45,12 @@ class RegistrarDatos {
 		// $_REQUEST['lon'] = '10';
 		$cadenaSql = $this -> miSql -> getCadenaSql('registrarDato', $_REQUEST);
 		$resultado = $esteRecursoDB -> ejecutarAcceso($cadenaSql, "insertar");
+		if ($resultado) {
+			echo '0';
+		} else {
+			echo '1';
+			echo $cadenaSql;
+		}
 		exit();
 		if ($resultado) {
 			redireccion::redireccionar('inserto', $_REQUEST['docenteRegistrar']);

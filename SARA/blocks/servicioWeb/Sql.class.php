@@ -149,6 +149,15 @@ class Sql extends \Sql {
 				$cadenaSql .= " ORDER BY tiempo";
 				$cadenaSql .= " DESC LIMIT " . $variable['limit'] . ";";
 				break;
+			case 'consultarPosicion' :
+				$cadenaSql = " SELECT";
+				$cadenaSql .= " public.ST_X(geometria) AS longitud,";
+				$cadenaSql .= " public.ST_Y(geometria) AS latitud";
+				$cadenaSql .= " FROM";
+				$cadenaSql .= " modelo_emplazamiento.dato";
+				$cadenaSql .= " ORDER BY tiempo";
+				$cadenaSql .= " ;";
+				break;
 		}
 
 		return $cadenaSql;

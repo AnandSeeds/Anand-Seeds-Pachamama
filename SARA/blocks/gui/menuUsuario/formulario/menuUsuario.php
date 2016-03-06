@@ -45,18 +45,38 @@ class Form {
 		$directorio = $this -> miConfigurador -> getVariableConfiguracion("host");
 		$directorio .= $this -> miConfigurador -> getVariableConfiguracion("site") . "/index.php?";
 		$directorio .= $this -> miConfigurador -> getVariableConfiguracion("enlace");
-
-		$enlace = 'pagina=registroEmplazamiento';
-		$enlace = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace, $directorio);
-
+		
+		$enlace = 'pagina=emplazamientosUsuario';
+		$enlace = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace, $directorio);		
+		
+		$enlace1 = 'pagina=monitoreo';
+		$enlace1 = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace1, $directorio);
+		
+		$enlace2 = 'pagina=planDeSiembra';
+		$enlace2 = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace2, $directorio);
+		
+		$enlace3 = 'pagina=registroEmplazamiento';
+		$enlace3 = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificar_url($enlace3, $directorio);
+		
+		
 		$claseEnlaceInicio = '';
 		$claseEnlaceEmplazamiento = '';
-		$claseEnlaceOtros = '';
+		$claseEnlaceMonitoreo = '';
+		$claseEnlacePlanSiembra = '';
 		$claseEnlaceAcercaDe = '';
 
 		switch ($_REQUEST['pagina']) {
+			case 'registroEmplazamiento' :
+				$claseEnlaceInicio = 'class="active"';
+				break;
 			case 'emplazamientosUsuario' :
 				$claseEnlaceEmplazamiento = 'class="active"';
+				break;
+			case 'monitoria' :
+				$claseEnlaceMonitoreo = 'class="active"';
+				break;
+			case 'planSiembra' :
+				$claseEnlacePlanSiembra = 'class="active"';
 				break;
 			case 'acercaDe' :
 				$claseEnlaceAcercaDe = 'class="active last"';
@@ -69,8 +89,10 @@ class Form {
 		echo '
 		<div id="cssmenu">
 			<ul>
-			   <li ' . $claseEnlaceEmplazamiento . '><a href="/index.php"><span>Mis emplazamientos</span></a></li>
-			   <li><a href="' . $enlace . '"><span>Registrar Emplazamiento</span></a></li>
+			   <li ' . $claseEnlaceEmplazamiento . '><a href="' . $enlace . '"><span>Mis emplazamientos</span></a></li>
+			   <li ' . $claseEnlaceMonitoreo . '><a href="' . $enlace1 . '"><span>Monitoreo</span></a></li>
+			   <li ' . $claseEnlacePlanSiembra . '><a href="' . $enlace2 . '"><span>Plan de Siembra</span></a></li>
+			   <li ' . $claseEnlaceInicio . '><a href="' . $enlace3 . '"><span>Registrar Emplazamiento</span></a></li>
 			   <li ' . $claseEnlaceAcercaDe . '><a target="_blank" href="http://anandseeds.co/"><span>Acerca de</span></a></li>
 			</ul>
 		</div>';
