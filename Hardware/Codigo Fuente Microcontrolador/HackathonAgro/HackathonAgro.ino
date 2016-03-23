@@ -28,7 +28,7 @@ byte colPins[COLS] = { 53, 51, 49, 47 }; // connect to the column pinouts of the
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 int posicion = 0;
-const char clave[] = "ABCD9903";
+const char clave[] = "ABC123";
 const int tamannoClave = strlen(clave);
 char passin[tamannoClave - 1];//indice 3 denota 4 elementos 0,1,2,3...
 int led = 5;
@@ -137,7 +137,7 @@ void setup() {
 	// Si quitamos el comentario de la linea siguiente, se ajusta la hora
 	// y la fecha con la del ordenador
 	// RTC.adjust(DateTime(__DATE__, __TIME__));
-	myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora,
+	myRTC.setDS1302Time(00, 42, 2, 3, 23, 3, 2016); // seg, min, hora,
 	// dia de la
 	// semana, dia del
 	// mes, mes, año
@@ -346,7 +346,7 @@ void GetUV() {
 	// Use the 3.3V power pin as a reference to get a very accurate output
 	// value from sensor
 	outputVoltage = 3.3 / refLevel * uvLevel;
-	uvIntensity = mapfloat(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
+	uvIntensity = mapfloate(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
 
 	// Serial.print("Nivel MP8511:");
 	// Serial.print(uvLevel);
@@ -527,8 +527,7 @@ int averageAnalogRead(int pinToRead) {
  * @param float out_max es alguna cosa
  * @return float que representa alguna cosa
  */
-float mapfloat(float x, float in_min, float in_max, float out_min,
-		float out_max) {
+float mapfloate(float x, float in_min, float in_max, float out_min, float out_max) {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
@@ -552,7 +551,8 @@ void configuracionGPRS() {
         delay(500);
         
         // Configurar tarea y configura el APN
-        sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
+        //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
+        sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
         Serial.println(debug());
         delay(500);
         
@@ -573,7 +573,7 @@ void enviarDatosSIM() {
         Serial.println(debug());
         delay(2000);
         
-        sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"80\"")); //Inicia conexión UDP o TCP
+        sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"8080\"")); //Inicia conexión UDP o TCP
         Serial.println(debug());
         delay(2000);
         
@@ -601,7 +601,7 @@ void enviarDatosSIM() {
         dtostrf(h, 0, 3, hr);
         static char iuv[15];
         dtostrf(uvIntensity, 0, 3, iuv);
-        String cadena = "GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=222222&ts="
+        String cadena = "GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=1&ts="
         +String(ts)
         +"&ta="+String(ta)
         +"&hs="+String(hs)

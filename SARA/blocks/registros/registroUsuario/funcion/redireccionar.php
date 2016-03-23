@@ -11,17 +11,15 @@ class redireccion {
 		$miConfigurador = \Configurador::singleton ();
 		$miPaginaActual = $miConfigurador->getVariableConfiguracion ( "pagina" );
 		switch ($opcion) {
+			
 			case "inserto" :
-				$variable = "pagina=" . $miPaginaActual;
-				$variable .= "&opcion=mensaje";
-				$variable .= "&mensaje=confirma";
-				$variable .= "&docente=" . $valor;
+				$variable = "pagina=index";
+				$variable .= "&mensaje=" . $valor;
 				break;
 			
 			case "noInserto" :
 				$variable = "pagina=" . $miPaginaActual;
-				$variable .= "&opcion=mensaje";
-				$variable .= "&mensaje=error";
+				$variable .= "&error=error";
 				break;
 			
 			case "noItems" :
