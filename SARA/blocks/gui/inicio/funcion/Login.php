@@ -46,6 +46,7 @@ class FormProcessor {
 		 *
 		 * @todo En entornos de producción la clave debe codificarse utilizando un objeto de la clase Codificador
 		 */
+		 
 		$_REQUEST['tiempo'] = time();
 		$variable['usuario'] = $_REQUEST["usuario"];
 		$variable['clave'] = $this -> miConfigurador -> fabricaConexiones -> crypto -> codificarClave($_REQUEST["clave"]);
@@ -55,32 +56,35 @@ class FormProcessor {
 			$cadena_sql = $this -> miSql -> getCadenaSql("buscarUsuario", $variable);
 			$registro = $esteRecursoDB -> ejecutarAcceso($cadena_sql, "busqueda");
 			if ($registro) {
-				if ($registro[0]['clave'] == $variable["clave"]) {
+				if ($registro[0]['clave'] == $variable['clave']) {
 					// 1. Crear una sesión de trabajo
+					
 					$estaSesion = $this -> miSesion -> crearSesion($registro[0]["id_usuario"]);
 					
 					if ($estaSesion) {
 						//var_dump($log);
-						$_COOKIE["aplicativo"] = $estaSesion;
+						$_COOKIE['aplicativo'] = $estaSesion;
 						//$this->miLogger->log_usuario($log);
 						//Si estado dif Activo redirecciona a pagina decambio contraseña
-						if ($registro[0]['estado'] == 2) {
-							Redireccionador::redireccionar('claves', $registro);
-						} else {
+						// if ($registro[0]['estado'] == 2) {
+							// var_dump($registro);die;
+// 							
+						// } else {
 							Redireccionador::redireccionar('paginaUsuario');
-						}
+						//}
 					}
 					// Redirigir a la página principal del usuario, en el arreglo $registro se encuentran los datos de la sesion:
 					// $this->funcion->redireccionar("indexUsuario", $registro[0]);
 					return true;
 				} else {
-
+					Redireccionador::redireccionar('paginaPrincipal','La clave es incorrecta.');
 					//                    echo "no valido";
 					//                    exit;
 					// Registrar el error por clave no válida
 				}
 			} else {
 				// Registrar el error por usuario no valido
+				Redireccionador::redireccionar('paginaPrincipal','El usuario no existe.');
 			}
 		} else {
 			// Registrar evento por tiempo de expiración en controles

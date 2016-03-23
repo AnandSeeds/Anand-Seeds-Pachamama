@@ -50,6 +50,12 @@ class Redireccionador {
 				
 			case "paginaUsuario" :
                 $variable = "pagina=emplazamientosUsuario";
+				$variable .= "&error=ninguno";
+                break;
+				
+			case "paginaUsuarioError" :
+                $variable = "pagina=emplazamientosUsuario";
+				$variable .= "&error=alguno";
                 break;
 
             default :

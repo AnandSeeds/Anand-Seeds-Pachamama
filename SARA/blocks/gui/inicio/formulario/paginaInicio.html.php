@@ -25,7 +25,12 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 						¡¡¡Sesión Expirada!!!
 					</div>
 					<?php endif; ?>
-					<div class="success"></div>
+					<?php if(isset($_REQUEST['mensaje'])):?>
+					<div class="success">
+						<?php echo $_REQUEST['mensaje']; ?>
+					</div>
+					<?php endif; ?>
+					
 					<?php
 					// ---------------- SECCION: Parámetros Generales del Formulario ----------------------------------
 					// ---------------- SECCION: Parámetros Generales del Formulario ----------------------------------
@@ -170,7 +175,7 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 		</div>
 	</div>
 
-	<div style="width: 100%;">
+	<!-- <div style="width: 100%;">
 		<ul class="social-icons">
 			<li class="icon icon--facebook">
 				<a href="http://facebook.com/anandseeds"> <span class="icon__name">Facebook</span> </a>
@@ -182,7 +187,7 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 				<a href="https://www.youtube.com/channel/UC961fU1OYyv4lASjLpixzfA" target="_blank"> <i class="fa fa-youtube"></i> </a>
 			</li>
 		</ul>
-	</div>
+	</div> -->
 	<!--[if !(IE) | (gte IE 10)]><!-->
 	<noscript>
 		SGA necesita Javascript.

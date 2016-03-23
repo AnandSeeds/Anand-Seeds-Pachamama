@@ -108,16 +108,16 @@ class Sql extends \Sql {
 			case "buscarUsuario" :
 				$cadenaSql = 'SELECT ';
 				$cadenaSql .= 'id_usuario, ';
-				$cadenaSql .= 'nombre, ';
-				$cadenaSql .= 'apellido, ';
-				$cadenaSql .= 'correo, ';
-				$cadenaSql .= 'telefono, ';
-				$cadenaSql .= 'imagen, ';
-				$cadenaSql .= 'clave, ';
-				$cadenaSql .= 'tipo, ';
-				$cadenaSql .= 'estilo, ';
-				$cadenaSql .= 'idioma, ';
-				$cadenaSql .= 'estado ';
+				// $cadenaSql .= 'nombre, ';
+				// $cadenaSql .= 'apellido, ';
+				// $cadenaSql .= 'correo, ';
+				// $cadenaSql .= 'telefono, ';
+				// $cadenaSql .= 'imagen, ';
+				$cadenaSql .= 'clave ';
+				// $cadenaSql .= 'tipo, ';
+				// $cadenaSql .= 'estilo, ';
+				// $cadenaSql .= 'idioma, ';
+				// $cadenaSql .= 'estado ';
 				$cadenaSql .= 'FROM ';
 				$cadenaSql .= $prefijo . 'usuario ';
 				$cadenaSql .= "WHERE ";

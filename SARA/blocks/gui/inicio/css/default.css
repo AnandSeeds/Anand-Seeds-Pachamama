@@ -1230,6 +1230,8 @@ input[type="text"] ~ .show-password:hover + .show-password-label {
 .links {
     overflow: auto;
     padding: 5px;
+    width: 100%;
+    display: inline-block;
 }
 .links + .privacy-links {
     margin: 20px 0 15px;
@@ -2325,7 +2327,7 @@ not all,
 }
 .success {
     background: #5fad47 none repeat scroll 0 0;
-    display: none;
+    /*display: none;*/
 }
 .info {
     background: #0095dd none repeat scroll 0 0;
