@@ -1,4 +1,6 @@
+<?php
 
+?>
 var datos = [
     {
         "0": "3.34526",
@@ -169,6 +171,8 @@ var datos = [
         "latitud": "-76.54557"
     }
 ];
+
+
 var features = new Array();
 for (var i = 0; i < datos.length; i++){
 	var geometry = {

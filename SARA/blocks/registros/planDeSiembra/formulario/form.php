@@ -369,10 +369,3 @@ $miFormulario = new FormularioRegistro ( $this->lenguaje, $this->miFormulario, $
 $miFormulario->formulario ();
 $miFormulario->mensaje ();
 ?>
-
-	</section>
-		</div>
-		<!--[if !(IE) | (gte IE 10)]><!-->
-		<noscript>
-			SGA necesita Javascript.
-		</noscript>
