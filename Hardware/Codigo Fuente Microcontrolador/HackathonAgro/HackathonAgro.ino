@@ -1,15 +1,13 @@
 /*
  ***********************************************************************
- *                      LIBRERIAS y CONSTANTES
+ *              LIBRERIAS y CONSTANTES
  ***********************************************************************
  */
 
 /****** INICIO MODULO RELOJ ******/
-
 #include <virtuabotixRTC.h> //
 // Creation of the Real Time Clock Object
 virtuabotixRTC myRTC(21, 20, 19); // CLK,DAT,RST -- SCLK -> 21, I/O -> 20, CE -> 19
-
 /****** FIN MODULO RELOJ ******/
 
 /***** INICIO KEYBOARD *****/
@@ -18,9 +16,9 @@ const byte ROWS = 4; // four rows
 const byte COLS = 4; // three columns
 
 char keys[ROWS][COLS] = { { '1', '2', '3', 'A' }, 
-                          { '4', '5', '6', 'B' }, 
-                          { '7', '8', '9', 'C' }, 
-                          { '*', '0', '#', 'D' } };
+              { '4', '5', '6', 'B' }, 
+              { '7', '8', '9', 'C' }, 
+              { '*', '0', '#', 'D' } };
 
 byte rowPins[ROWS] = { 45, 43, 41, 39 }; // connect to the row pinouts of the keypad
 byte colPins[COLS] = { 53, 51, 49, 47 }; // connect to the column pinouts of the keypad
@@ -28,29 +26,27 @@ byte colPins[COLS] = { 53, 51, 49, 47 }; // connect to the column pinouts of the
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 int posicion = 0;
-const char clave[] = "ABC123";
+const char clave[] = "A";
 const int tamannoClave = strlen(clave);
 char passin[tamannoClave - 1];//indice 3 denota 4 elementos 0,1,2,3...
-int led = 5;
+int ledLogin = 5;
 int intentos = 10;
 /***** FIN KEYBOARD *****/
 
 /***** INICIO LCD ******/
-
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(12, 11, 10, 9, 8, 7); // LiquidCrystal(rs, enable, d4, d5, d6, d7)
-
 /***** FIN LCD ******/
 
 /***** INICIO MODULO GPS ******/
+#define GPS_TX_DIGITAL_OUT_PIN 13
+#define GPS_RX_DIGITAL_OUT_PIN 31
+
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(13, 31); // RX, TX
+SoftwareSerial gpsSerial(13, 31); // RX placa <- TX sensor, TX placa -> RX senxor
 
 #include "TinyGPS.h"
 TinyGPS gps;
-
-#define GPS_TX_DIGITAL_OUT_PIN 13
-#define GPS_RX_DIGITAL_OUT_PIN 31
 
 #define MAX_BUFFER 500
 
@@ -68,14 +64,12 @@ char longi[12];
 /***** FIN MODULO GPS ******/
 
 /****** INICIO HUMEDAD Y TEMPERATURA AMBIENTE ******/
-
 #include "DHT.h"
 #define DHTPIN 6
 #define DHTTYPE DHT22 // DHT 22 (AM2302)
 DHT dht(DHTPIN, DHTTYPE);
 float h;
 float t;
-
 /****** FIN HUMEDAD Y TEMPERATURA AMBIENTE ******/
 
 /******* INICIO TEMPERATURA DEL SUELO **********/
@@ -96,316 +90,154 @@ float uvIntensity;
 // Hardware pin definitions MP8511
 int UVOUT = A0; // Output from the sensor
 int REF_3V3 = A1; // 3.3V power on the Arduino board
-
 /****** FIN UV ******/
 
-/****** INICIO CONTROL DE LECTURAS ******/
-unsigned long time;
-int alertaUV;
-/****** FIN CONTROL DE LECTURAS ******/
-
-/****** INICIO CONTADOR SET POINT *****/
-const int boton = 2; // Interrupcion 0
-volatile int contador = 0;
-int lastInt = millis();
-/****** FIN CONTADOR SET POINT *****/
-
-/****** INICIO MODULO SD ******/
-
-// #include <SD.h>
-// File myFile;
-/****** FIN MODULO SIM ******/
+/****** INICIO MODULO GSM/GPRS ******/
 #include <SoftwareSerial.h>
 SoftwareSerial sim800l(17,16); //RX - TX
+/****** FIN MODULO GSM/GPRS ******/
 
-/****** INICIO MODULO SIM ******/
-
-// #include <SD.h>
-// File myFile;
-/****** FIN MODULO SD ******/
-
-/**
- * FUNCION DE CONFIGURACION INICIAL
+/*
+ ***********************************************************************
+ *              SETUP CONFIGURACIÓN INICIAL
+ ***********************************************************************
  */
 void setup() {
-        pinMode(led, OUTPUT);
-        lcd.begin(16, 2);
-        lcd.print("Ingresa el pass");
-        while(!cargarClave()){}
-	// Wire.begin();
-	// RTC.begin();
-	// Si quitamos el comentario de la linea siguiente, se ajusta la hora
-	// y la fecha con la del ordenador
-	// RTC.adjust(DateTime(__DATE__, __TIME__));
-	myRTC.setDS1302Time(00, 42, 2, 3, 23, 3, 2016); // seg, min, hora,
-	// dia de la
-	// semana, dia del
-	// mes, mes, año
-
-	Serial.begin(9600);
-	Serial.println("Iniciando..");
-        sim800l.begin(19200); //Configuracion de puerto serial del modulo (baudios por segundo)
-	
-
-        mySerial.begin(9600);
-	// pinMode(53, OUTPUT);
-        Serial.println("Iniciando configuracion del modulo GSM"); 
-        sim800l.println(F("AT"));
-        delay(500);
-        Serial.println(debug());
-        sim800l.println(F("AT+CBC"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
-        delay(500);
-        Serial.println(debug());
-        sim800l.println(F("AT+IPR=19200"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
-        delay(500);
-        Serial.println(debug());
-        
-        sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
-        delay(500);
-        Serial.println(debug());
-        configuracionGPRS();
-        Serial.print("Configuracion finalizada.\r\n");
-        //enviardatos();
-	dht.begin();
-
-	pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
-	pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
-
-	
-
-	// Antirebote para pulsador por software
-	attachInterrupt(0, SetPoint, FALLING);
-
-	// /////////////////////////////////////////////////////
-
-	// Serial.print("Initializing SD card...");
-	//
-	// pinMode(53, OUTPUT);
-	//
-	// if (!SD.begin(53)) {
-	// Serial.println("initialization failed!");
-	// return;
-	// }
-	// Serial.println("initialization done.");
+    validarAccesoPorClave();
+    configurarMonitorSerial();
+    configurarGPRS();
+    configurarRTC();
+    configurarGPS();
+    configurarSensorDHT();
 }
 
-/**
- * FUNCION DE BUCLE PRINCIPAL
+void validarAccesoPorClave(){
+    pinMode(ledLogin, OUTPUT);//Iniciar estado led
+    lcd.clear();
+    lcd.begin(16, 2);
+    lcd.print("Ingresa el pass");
+    while(!ingresarClave()){}
+}
+
+void configurarMonitorSerial(){
+    Serial.begin(9600);
+    Serial.println("Iniciando...");
+}
+
+void configurarRTC(){
+    myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
+}
+
+void configurarSensorDHT(){
+    //Sensor temperatura y humedad
+    dht.begin();
+}
+
+void configurarGPS(){    
+    pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
+    pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
+    gpsSerial.begin(9600);
+}
+
+/*
+ ***********************************************************************
+ *              LOOP BUCLE PRINCIPAL
+ ***********************************************************************
  */
 void loop() {
-	// Start printing elements as individuals
-	myRTC.updateTime();
-	Serial.print("Current Date / Time: ");
-	Serial.print(myRTC.dayofmonth);
-	Serial.print("/");
-	Serial.print(myRTC.month);
-	Serial.print("/");
-	Serial.print(myRTC.year);
-	Serial.print(" ");
-	Serial.print(myRTC.hours);
-	Serial.print(":");
-	Serial.print(myRTC.minutes);
-	Serial.print(":");
-	Serial.println(myRTC.seconds);
-	// Delay so the program doesn't print non-stop
-	delay(5000);
-
-	/*
-	 * myFile = SD.open("test.txt", FILE_WRITE);
-	 * 
-	 * // if the file opened okay, write to it: if (myFile) {
-	 * Serial.print("Writing to test.txt...");
-	 * 
-	 * DateTime now = RTC.now(); myFile.print(now.day(), DEC);
-	 * myFile.print("/"); myFile.print(now.month(), DEC);
-	 * myFile.print("/"); myFile.print(now.year(), DEC); myFile.print("
-	 * "); myFile.print(now.hour(), DEC); myFile.print(":");
-	 * myFile.print(now.minute(), DEC); myFile.print(":");
-	 * myFile.print(now.second(), DEC); myFile.print(" ");
-	 * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
-	 * myFile.print(t); myFile.print(","); myFile.print(uvindex);
-	 * myFile.print(","); myFile.print(CO); myFile.print(",");
-	 * myFile.print(COV); myFile.print(","); myFile.print(MP);
-	 * myFile.print(","); myFile.print(latit); myFile.print(",");
-	 * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
-	 * // close the file: myFile.close(); Serial.println("done."); } else
-	 * { // if the file didn't open, print an error: Serial.println("error 
-	 * opening test.txt"); }
-	 * 
-	 * // re-open the file for reading: myFile = SD.open("test.txt"); if
-	 * (myFile) { Serial.println("test.txt:");
-	 * 
-	 * // read from the file until there's nothing else in it: while
-	 * (myFile.available()) { Serial.write(myFile.read()); } // close the
-	 * file: myFile.close(); } else { // if the file didn't open, print an 
-	 * error: Serial.println("error opening test.txt"); }
-	 * 
-	 */
-
-	GetGPS();
-	GetHT();
-	GetTs();
-	GetHS();
-	GetUV();
-	GetFecha();
-        
-	Imprime_registros();
-	Imprime_registros2();
-	Imprime_registros3();
-	Imprime_registros4();
-
-        enviarDatosSIM();
-        Serial.print("Envio de datos finalizado.\r\n");
+    GetTimeRTC();
+    GetGPS();
+    GetHT();
+    GetTs();
+    GetHS();
+    GetUV();
+    mostrarFecha();    
+    mostrarRegistrosLCD();//Humedad y Temperatura, Aire y Suelo
+    mostrarRegistrosLCD2();//Nivel UV e Intensidad UV
+    mostrarRegistrosLCD3();//Latitud y Longitud
+    enviarDatosSIM();
+    visualizarVariablesSerial();
 }
 
 /****** INICIO FUNCIONES ADICIONALES ******/
+
+void GetTimeRTC(){
+    myRTC.updateTime();
+    // Delay so the program doesn't print non-stop
+    delay(5000);
+}
 
 /**
  * Se utiliza para cargar los datos del modulo GPS y se guardan en las variables
  * globales latit y longi.
  */
 void GetGPS() {
+    bool newData = false;
+    unsigned long chars = 0;
+    unsigned short sentences, failed;
 
-	bool newData = false;
-	unsigned long chars = 0;
-	unsigned short sentences, failed;
+    for (unsigned long start = millis(); millis() - start < 1000;) {
+        while (gpsSerial.available()) {
+            int c = gpsSerial.read();
+            ++chars;
+            if (gps.encode(c)){
+                newData = true;
+            }
+        }
+    }
 
-	for (unsigned long start = millis(); millis() - start < 1000;) {
-		while (mySerial.available()) {
-			int c = mySerial.read();
-			++chars;
-			if (gps.encode(c))
-				newData = true;
-		}
-	}
-
-	if (newData) {
-
-		if (secondsToFirstLocation == 0) {
-			secondsToFirstLocation = (millis() - startMillis) / 1000;
-		}
-
-		unsigned long age;
-		gps.f_get_position(&latitude, &longitude, &age);
-
-		Serial.print("Location: ");
-		Serial.print(latitude, 6);
-		Serial.print(" , ");
-		Serial.print(longitude, 6);
-		Serial.println("");
-	}
-
-	dtostrf(latitude, 0, 6, latit);
-	dtostrf(longitude, 0, 6, longi);
-	Serial.println(latit);
-	Serial.println(longi);
+    if (newData) {
+        if (secondsToFirstLocation == 0) {
+            secondsToFirstLocation = (millis() - startMillis) / 1000;
+        }
+        unsigned long age;
+        gps.f_get_position(&latitude, &longitude, &age);
+        Serial.print("Ubicacion: ");
+        Serial.print(latitude, 6);
+        Serial.print(" , ");
+        Serial.print(longitude, 6);
+        Serial.println("");
+    }
+    dtostrf(latitude, 0, 6, latit);
+    dtostrf(longitude, 0, 6, longi);
 }
 
 /**
  * Se obtiene la humedad relativa (aire) y se guarda en las variables globales h y t.
  */
 void GetHT() {
-	h = dht.readHumidity();
-	t = dht.readTemperature();
-	// Serial.print("Humidity: ");
-	// Serial.print(h);
-	// Serial.print("% ");
+  h = dht.readHumidity();
+  t = dht.readTemperature();
 }
 
 /**
  * Se obtiene la temperatura por medio de la lectura analoga del pin temp_pin
  */
 void GetTs() {
-	TempC = analogRead(temp_pin);
-	TempC = (5.0 * TempC * 100.0) / 1024.0;
-	// Serial.print(temperatura);
-	// Serial.println(" oC");
-	// delay(1000);
+  TempC = analogRead(temp_pin);
+  TempC = (5.0 * TempC * 100.0) / 1024.0;
 }
 
 /**
  * Se optiene la humedad del suelo por medio del PIN analogo A2.
  */
 void GetHS() {
-	int val2 = analogRead(A2);
-	HS = val2 * (5.0 / 1023.0);
-	// Serial.print("Humedad Suelo:");
-	// delay(1000);
-	// Serial.print(HS);
-	// delay(1000);
-	// Serial.print("\n ");
+  int val2 = analogRead(A2);
+  HS = val2 * (5.0 / 1023.0);
 }
 
 /**
  * Se obtiene la radiacion ultravioleta y se guarda en la variable global uvIntensity.
  */
 void GetUV() {
-	uvLevel = averageAnalogRead(UVOUT);
-	refLevel = averageAnalogRead(REF_3V3);
+  uvLevel = averageAnalogRead(UVOUT);
+  refLevel = averageAnalogRead(REF_3V3);
 
-	// Use the 3.3V power pin as a reference to get a very accurate output
-	// value from sensor
-	outputVoltage = 3.3 / refLevel * uvLevel;
-	uvIntensity = mapfloate(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
-
-	// Serial.print("Nivel MP8511:");
-	// Serial.print(uvLevel);
-	// delay(1000);
-	// Serial.print("\n ");
-	// Serial.print(" Voltaje MP8511 : ");
-	// Serial.print(outputVoltage);
-	// delay(1000);
-	// Serial.print("\n ");
-	// Serial.print("Intensidad (mW/cm^2): ");
-	// Serial.print(uvIntensity);
-	// delay(500);
-	// Serial.print("\n ");
-	// delay(500);
+  // Use the 3.3V power pin as a reference to get a very accurate output
+  // value from sensor
+  outputVoltage = 3.3 / refLevel * uvLevel;
+  uvIntensity = mapfloat(outputVoltage, 0.99, 2.9, 0.0, 15.0); // (mW/cm^2)
 }
-
-/**
- * Arreglo Set Point que no se sabe qué significa
- */
-void SetPoint() {
-	if ((millis() - lastInt) > 500) {
-		contador++;
-		lastInt = millis();
-	}
-}
-
-/*
- * void GetSD() {
- * 
- * 
- * myFile = SD.open("test.txt", FILE_WRITE);
- * 
- * // if the file opened okay, write to it: if (myFile) {
- * 
- * DateTime now = RTC.now(); Serial.print("Writing to test.txt...");
- * 
- * myFile.print("Sensores: "); myFile.print(h); myFile.print(",");
- * myFile.print(t); myFile.print(","); myFile.print(uvindex);
- * myFile.print(","); myFile.print(CO); myFile.print(",");
- * myFile.print(COV); myFile.print(","); myFile.print(MP);
- * myFile.print(","); myFile.print(latit); myFile.print(",");
- * myFile.println(longi); myFile.close(); Serial.println("Hecho.");
- * // close the file: myFile.close(); Serial.println("done."); } else
- * { // if the file didn't open, print an error: Serial.println("error 
- * opening test.txt"); }
- * 
- * // re-open the file for reading: myFile = SD.open("test.txt"); if
- * (myFile) { Serial.println("test.txt:");
- * 
- * // read from the file until there's nothing else in it: while
- * (myFile.available()) { Serial.write(myFile.read()); } // close the
- * file: myFile.close(); } else { // if the file didn't open, print an 
- * error: Serial.println("error opening test.txt"); }
- * 
- * 
- * 
- * 
- * } 
- */
 
 /**
  * Se imprimen los registros de:
@@ -415,21 +247,21 @@ void SetPoint() {
  * Temperatura del Suelo
  * Se espera 3 segundo para que se mantengan los datos.
  */
-void Imprime_registros() {
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("H:");
-	lcd.print(h);
-	lcd.setCursor(0, 1);
-	lcd.print("T:");
-	lcd.print(t);
-	lcd.setCursor(9, 0);
-	lcd.print("Hs:");
-	lcd.print(HS);
-	lcd.setCursor(9, 1);
-	lcd.print("Ts:");
-	lcd.print(TempC);
-	delay(3000);
+void mostrarRegistrosLCD() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("H:");
+  lcd.print(h);
+  lcd.setCursor(0, 1);
+  lcd.print("T:");
+  lcd.print(t);
+  lcd.setCursor(9, 0);
+  lcd.print("Hs:");
+  lcd.print(HS);
+  lcd.setCursor(9, 1);
+  lcd.print("Ts:");
+  lcd.print(TempC);
+  delay(3000);
 }
 
 /**
@@ -438,68 +270,53 @@ void Imprime_registros() {
  * Intensidad UV
  * Y se esperan 3 segundos.
  */
-void Imprime_registros2() {
-
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("UV level:");
-	lcd.print(uvLevel);
-	lcd.setCursor(0, 1);
-	lcd.print("UV Inten:");
-	lcd.print(uvIntensity);
-	delay(3000);
+void mostrarRegistrosLCD2() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("UV level:");
+  lcd.print(uvLevel);
+  lcd.setCursor(0, 1);
+  lcd.print("UV Inten:");
+  lcd.print(uvIntensity);
+  delay(3000);
 }
 
 /**
  * Se imprime en el LCD la latitud y longitud dadas por el GPS
  */
-void Imprime_registros3() {
-
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("La:");
-	lcd.print(latit);
-	lcd.setCursor(0, 1);
-	lcd.print("Lo:");
-	lcd.print(longi);
-	delay(3000);
+void mostrarRegistrosLCD3() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("La:");
+  lcd.print(latit);
+  lcd.setCursor(0, 1);
+  lcd.print("Lo:");
+  lcd.print(longi);
+  delay(3000);
 }
 
-/**
- * Se imprimen los registros:
- * set point
- * Y se esperan 3 segundos
- */
-void Imprime_registros4() {
-
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("Set Point:");
-	lcd.print(contador);
-	delay(3000);
-}
 
 /**
  * Para información del usuario en el LCD se imprime la fecha y la hora.
  */
-void GetFecha() {
-	// DateTime now = RTC.now();
-	lcd.clear();
-	lcd.setCursor(0, 0);
-	lcd.print("FECHA:");
-	lcd.print(myRTC.dayofmonth);
-	lcd.print("/");
-	lcd.print(myRTC.month);
-	lcd.print("/");
-	lcd.print(myRTC.year);
-	lcd.setCursor(0, 1);
-	lcd.print("HORA:");
-	lcd.print(myRTC.hours);
-	lcd.print(":");
-	lcd.print(myRTC.minutes);
-	lcd.print(":");
-	lcd.print(myRTC.seconds);
-	delay(2000);
+void mostrarFecha() {
+  // DateTime now = RTC.now();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("FECHA:");
+  lcd.print(myRTC.dayofmonth);
+  lcd.print("/");
+  lcd.print(myRTC.month);
+  lcd.print("/");
+  lcd.print(myRTC.year);
+  lcd.setCursor(0, 1);
+  lcd.print("HORA:");
+  lcd.print(myRTC.hours);
+  lcd.print(":");
+  lcd.print(myRTC.minutes);
+  lcd.print(":");
+  lcd.print(myRTC.seconds);
+  delay(2000);
 }
 
 /**
@@ -508,229 +325,250 @@ void GetFecha() {
  * @return int se obtiene el promedio de las últimas 8 muestras tomadas en el pin 
  */
 int averageAnalogRead(int pinToRead) {
-	byte numberOfReadings = 8;
-	unsigned int runningValue = 0;
+  byte numberOfReadings = 8;
+  unsigned int runningValue = 0;
 
-	for (int x = 0; x < numberOfReadings; x++)
-		runningValue += analogRead(pinToRead);
-	runningValue /= numberOfReadings;
+  for (int x = 0; x < numberOfReadings; x++)
+    runningValue += analogRead(pinToRead);
+  runningValue /= numberOfReadings;
 
-	return (runningValue);
+  return (runningValue);
 }
 
 /**
  * Arreglo para mapeo de punto flotante UVSensor
- * @param float x es alguna cosa
- * @param float in_min es alguna cosa
- * @param float in_max es alguna cosa
- * @param float out_min es alguna cosa
- * @param float out_max es alguna cosa
- * @return float que representa alguna cosa
+ * The Arduino Map function but for floats
+ * From: http://forum.arduino.cc/index.php?topic=3922.0
+ * https://learn.sparkfun.com/tutorials/ml8511-uv-sensor-hookup-guide
+ * @param float x es el voltaje de salida del sensor
+ * @param float in_min es un voltaje de 0.99V
+ * @param float in_max es un voltaje de 2.8V
+ * @param float out_min es el minimo nivel de radiación UV
+ * @param float out_max es el maximo nivel de radiación UV
+ * @return float que representa el nivel de radiación UV
  */
-float mapfloate(float x, float in_min, float in_max, float out_min, float out_max) {
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+float mapfloat(float x, float in_min, float in_max, float out_min, float out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-
-
-void configuracionGPRS() {
-        sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
-        Serial.println(debug());
-        delay(500);
-        sim800l.println(F("AT+CIPSHUT")); // Resetea las direcciones IP
-        Serial.println(debug());
-        delay(500);
-        sim800l.println(F("AT+CGATT=1")); // Verifica si el gprs esta activo o no
-        Serial.println(debug());
-        delay(500);
-        sim800l.println(F("AT+CIPSTATUS")); //Verifica si la pila o stack IP es inicializada
-        Serial.println(debug());
-        delay(500);
-        sim800l.println(F("AT+CIPMUX=0")); //Esta la conexión en modo simple(udp/tcp cliente o tcp server)
-        Serial.println(debug());
-        delay(500);
-        
-        // Configurar tarea y configura el APN
-        //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
-        sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
-        Serial.println(debug());
-        delay(500);
-        
-        sim800l.println(F("AT+CIICR")); // Levantar conexión wireless(GPRS o CSD)
-        Serial.println(debug());
-        delay(500);
+/**
+ * Se configura el módulo GSM
+ */
+void configurarGPRS() {
+    Serial.println("Iniciando configuracion del modulo GSM");
+    sim800l.println(F("AT"));
+    delay(500);
+    Serial.println(debugGSM());
+    sim800l.println(F("AT+CBC"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+    delay(500);
+    Serial.println(debugGSM());
+    sim800l.println(F("AT+IPR=19200"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+    delay(500);
+    Serial.println(debugGSM());
+    
+    sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
+    delay(500);
+    Serial.println(debugGSM());
+    
+    sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPSHUT")); // Resetea las direcciones IP
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CGATT=1")); // Verifica si el gprs esta activo o no
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPSTATUS")); //Verifica si la pila o stack IP es inicializada
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPMUX=0")); //Esta la conexión en modo simple(udp/tcp cliente o tcp server)
+    Serial.println(debugGSM());
+    delay(500);
+    
+    // Configurar tarea y configura el APN
+    //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
+    //sim800l.println(F("AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\""));
+    sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
+    Serial.println(debugGSM());
+    delay(500);
+    
+    sim800l.println(F("AT+CIICR")); // Levantar conexión wireless(GPRS o CSD)
+    Serial.println(debugGSM());
+    delay(500);
 }
 
 /**
  * Se acitva si el peso se encuentra en un limite definido
  */
 void enviarDatosSIM() {
-        //Se acitva si el peso se encuentra en un limite definido
-        //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
-        //Serial.println(debug());
-        //delay(500);
-        sim800l.println("AT+CIFSR"); // Obtiene una dirección IP
-        Serial.println(debug());
-        delay(2000);
-        
-        sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"8080\"")); //Inicia conexión UDP o TCP
-        Serial.println(debug());
-        delay(2000);
-        
-        sim800l.println(F("AT+CIPSEND\r\n")); // Envia datos al servidor remoto, ctlr+z o 0x1A,
-        //verifica que los datos salieron del puerto serial pero no indica si llegaron al servidor UDP
-        Serial.println(debug());
-        delay(500);
-        //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)+"&uv="+ String(t)+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)+"&gpslat="+String(latitude)+"&gpslog="+ String(longitude)); 
-//        sim800l.println("GET /index.php?data=N0FIQXVGSnFZMWF6WUx3VkVMbnhRYjhRZE1uNXRTY3JpOGVQTUVobEtRMWlPYmo4TVdzMENwMTROaWloUnllOGNDeW8wZjhwWm1lN29Fc1I1QmprbHk4bFhBPT0"
-//        +"&id_dispositivo=1&temp="+ String(t)
-//        +"&hum="+ String(h)
-//        +"&uv="+ String(t)
-//        +"&co="+ String(CO)
-//        +"&cov="+ String(COV)
-//        +"&hs="+ String(HS)
-//        +"&gpslat="+String(latitude)
-//        +"&gpslog="+ String(longitude));
-        static char ts[15];
-        dtostrf(TempC, 0, 3, ts);  // dtostrf(var, characters long, characters after the decimal point,array to save)
-        static char ta[15];
-        dtostrf(t, 0, 3, ta);
-        static char hs[15];
-        dtostrf(HS, 0, 3, hs);
-        static char hr[15];
-        dtostrf(h, 0, 3, hr);
-        static char iuv[15];
-        dtostrf(uvIntensity, 0, 3, iuv);
-        String cadena = "GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=1&ts="
-        +String(ts)
-        +"&ta="+String(ta)
-        +"&hs="+String(hs)
-        +"&hr="+String(hr)
-        +"&nuv="+String(uvLevel)
-        +"&iuv="+String(iuv)
-        +"&lat="+String(latit)
-        +"&lon="+String(longi);
-        Serial.println(cadena);
-        sim800l.println(cadena);      
-        //+floatTempC, 2, 2, 10))//+"&ta="+dtostrf(t, 2, 2, 10)+"&hs="+dtostrf(HS, 2, 2, 10)+"&hr="+dtostrf(h, 2, 2, 10)+"&nuv="+/*String(uvLevel)+*/"&iuv="+dtostrf(uvIntensity, 2, 2, 10)/*+"&lat="+latit+"&log="+longi*/);
-        //sim800l.println("GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N");
-        //sim800l.println("Host: 107.170.208.9");
-        //+"&co="+ String(CO)+"&cov="+ String(COV)+"&hs="+ String(HS)
-        //sim800l.println("GET /dato.php?temp="+ String(t)+"&hum="+ String(h)); 
-        //sim800l.println(F("GET /dato.php?temp=200&hum=200&ozon=100&uv=100")); 
-        // Se envia por un peticion GET los valores obtenidos
-        //Serial.println(debug());
-        //delay(500);
-        pushSlow("\r\n",100,100); //Envia un salto de linea
-        pushSlow("\x1A",100,100);//ctlr+z para finalizar el envio o 0x1A
-        //sim800l.write(0x1A);//ctlr+z para finalizar el envio o 0x1A
-        Serial.println(debug());
-        delay(500);
-        sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
-        Serial.println(debug());
-        delay(4000);
-        //pesomin=0;
+    //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
+    //Serial.println(debugGSM());
+    //delay(500);
+    sim800l.println("AT+CIFSR"); // Obtiene una dirección IP
+    Serial.println(debugGSM());
+    delay(2000);
+    
+    sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"8080\"")); //Inicia conexión UDP o TCP
+    Serial.println(debugGSM());
+    delay(2000);
+    
+    sim800l.println(F("AT+CIPSEND\r\n")); // Envia datos al servidor remoto, ctlr+z o 0x1A,
+    //verifica que los datos salieron del puerto serial pero no indica si llegaron al servidor UDP
+    Serial.println(debugGSM());
+    delay(500);
+
+    static char ts[15];
+    dtostrf(TempC, 0, 3, ts);  // dtostrf(var, characters long, characters after the decimal point,array to save)
+    static char ta[15];
+    dtostrf(t, 0, 3, ta);
+    static char hs[15];
+    dtostrf(HS, 0, 3, hs);
+    static char hr[15];
+    dtostrf(h, 0, 3, hr);
+    static char iuv[15];
+    dtostrf(uvIntensity, 0, 3, iuv);
+    String cadena = "GET /index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOoDc-di1h93jvWz6chN9zBuF78S7NlmsMoYCF7NQ4-MeD5sqbkKWcF1onSaZz8EI-ABc1Ej1tNL-HMdr2YJS-N&id=1&ts="
+    +String(ts)
+    +"&ta="+String(ta)
+    +"&hs="+String(hs)
+    +"&hr="+String(hr)
+    +"&nuv="+String(uvLevel)
+    +"&iuv="+String(iuv)
+    +"&lat="+String(latit)
+    +"&lon="+String(longi);
+    
+    Serial.println(cadena);
+    sim800l.println(cadena);
+    
+    pushSlow("\r\n",100,100); //Envia un salto de linea
+    pushSlow("\x1A",100,100);//ctlr+z para finalizar el envio o 0x1A
+    //sim800l.write(0x1A);//ctlr+z para finalizar el envio o 0x1A
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
+    Serial.println(debugGSM());
+    delay(4000);
 }
 
 /**
  * Envia datos por el SoftSerial lentamente
  */
 void pushSlow(char* command,int charaterDelay,int endLineDelay) {
-        for(int i=0; i<strlen(command); i++) {
-            sim800l.write(command[i]);
-            if(command[i]=='\n') {
-                 delay(endLineDelay);
-            } else {
-                 delay(charaterDelay);
-            }
+    for(int i=0; i<strlen(command); i++) {
+        sim800l.write(command[i]);
+        if(command[i]=='\n') {
+         delay(endLineDelay);
+        } else {
+         delay(charaterDelay);
         }
+    }
 }
 
 /**
- *
+ * Realiza la lectura del buffer del módulo GSM, acumula la salida de
+ * caracteres hasta que la transmisión serial termina
+ * Acumulador de caracteres recursivo
  */
-char *debug()  // devuelve el ``contenido de un objeto apuntado por un apuntador''. 
-{
-int i=0;
-char cad[255]="\0";
-char c='\0';
-        
-        strcpy(cad,"");
-        while(sim800l.available()>0)
-        {
+char *debugGSM()  {// devuelve el ``contenido de un objeto apuntado por un apuntador''. 
+    int i=0;
+    char cad[255]="\0";
+    char c='\0';    
+    strcpy(cad,"");
+    while(sim800l.available()>0) {
         c=sim800l.read();
         cad[i]=c;
         i++;
-        }
-      
-return cad;
+    } 
+    return cad;
 }
 
 /*
-*  Funcion acceso por teclado matricial
-*/
+ *  Funcion acceso por teclado matricial
+ */
+boolean ingresarClave() {
+    char key = keypad.getKey();
+    if (key) {
+        if (posicion == tamannoClave - 1) {
+            lcd.setCursor(posicion, 1);
+            passin[posicion] = key;
+            // print the number of seconds since reset:
+            lcd.print(key);
+            boolean iguales = true;
+            for (int i = 0; i < sizeof(clave); i++) {
+              if(passin[i] == clave[i]){
+                iguales = iguales && true;
+              } else {
+                iguales = iguales && false;
+              }
+            }
+            if (iguales) {
+                lcd.setCursor(0, 0);
+                lcd.print("....Cargando....");
+                lcd.setCursor(0, 1);
+                lcd.print("        ");
+                digitalWrite(ledLogin, HIGH);
+                return true;
+            } else {
+                lcd.setCursor(0, 0);
+                lcd.print("Intenta de nuevo...");
+                lcd.setCursor(0, 1);
+                lcd.print("           ");
 
-boolean cargarClave() {
-	char key = keypad.getKey();
-	if (key) {
-		if (posicion == tamannoClave - 1) {
-                        lcd.setCursor(posicion, 1);
-                        passin[posicion] = key;
-			// print the number of seconds since reset:
-			lcd.print(key);
-			boolean iguales = true;
-                        for (int i = 0; i < sizeof(clave); i++) {
-                          if(passin[i] == clave[i]){
-                            iguales = iguales && true;
-                          } else {
-                            iguales = iguales && false;
-                          }
-                        }
-			if (iguales) {
-				lcd.setCursor(0, 0);
-				lcd.print("....Cargando....");
-                                lcd.setCursor(0, 1);
-                                lcd.print("                ");
-				digitalWrite(led, HIGH);
-//				for (int positionCounter = 0; positionCounter < 13; positionCounter++) {
-//					lcd.setCursor(0, 1);
-//					lcd.print("....Bienvenido #UKHackathonAgro");
-//					lcd.scrollDisplayLeft();
-//					delay(500);
-//				}
-//
-//				for (int positionCounter = 0; positionCounter < 29; positionCounter++) {
-//					lcd.setCursor(0, 1);
-//					lcd.scrollDisplayLeft();
-//					delay(500);
-//				}
-                                return true;
-			} else {
-				lcd.setCursor(0, 0);
-				lcd.print("Intenta de nuevo...");
-				lcd.setCursor(0, 1);
-				lcd.print("               ");
+                if (intentos <= 0) {
+                    lcd.setCursor(0, 0);
+                    lcd.print("Reinicie el sistema");
+                    while (true) {};
+                } else {
+                    intentos--;
+                    posicion = 0;
+                }
+            }
+        } else {
+            lcd.setCursor(posicion, 1);
+            // print the number of seconds since reset:
+            lcd.print(key);
+            passin[posicion] = key;
+            posicion++;
+        }
+    }
+    return false;
+}
 
-				if (intentos <= 0) {
-					lcd.setCursor(0, 0);
-					lcd.print("Reinicie el sistema");
-					while (true) {
-					};
-				} else {
-					intentos--;
-					posicion = 0;
-				}
-			}
-		} else {
-			lcd.setCursor(posicion, 1);
-			// print the number of seconds since reset:
-			lcd.print(key);
-			passin[posicion] = key;
-			posicion++;
-		}
-
-	}
-        return false;
+/**
+  * Permite configurar la visualizacion de variables
+  */
+void visualizarVariablesSerial(){
+    Serial.print("FECHA:");
+    Serial.print(myRTC.dayofmonth);
+    Serial.print("/");
+    Serial.print(myRTC.month);
+    Serial.print("/");
+    Serial.println(myRTC.year);
+    Serial.print("HORA:");
+    Serial.print(myRTC.hours);
+    Serial.print(":");
+    Serial.print(myRTC.minutes);
+    Serial.print(":");
+    Serial.println(myRTC.seconds);
+    Serial.println("Humedad:");
+    Serial.println(h);
+    Serial.println("Temperatura:");
+    Serial.println(t);
+    Serial.println("Humedad Suelo:");
+    Serial.println(HS);
+    Serial.println("Temperatura Suelo:");
+    Serial.println(TempC);
+    Serial.println("UV level:");
+    Serial.println(uvLevel);
+    Serial.println("UV Inten:");
+    Serial.println(uvIntensity);
+    Serial.println("Latitud:");
+    Serial.println(latit);
+    Serial.println("Longitud:");
+    Serial.println(longi);
+    Serial.print("Envio de datos finalizado.\r\n");
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
+
