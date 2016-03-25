@@ -125,7 +125,7 @@ void configurarMonitorSerial(){
 }
 
 void configurarRTC(){
-    myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
+    myRTC.setDS1302Time(00, 25, 8, 6, 27, 2, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
 }
 
 void configurarSensorDHT(){
@@ -369,7 +369,7 @@ void configurarGPRS() {
     sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
     delay(500);
     Serial.println(debugGSM());
-    
+    //Hola
     sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
     Serial.println(debugGSM());
     delay(500);
@@ -390,6 +390,7 @@ void configurarGPRS() {
     //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
     //sim800l.println(F("AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\""));
     sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
+    //sim800l.println(F("AT+CSTT=\"web.vmc.net.co\""));
     Serial.println(debugGSM());
     delay(500);
     
@@ -571,4 +572,5 @@ void visualizarVariablesSerial(){
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
+
 
