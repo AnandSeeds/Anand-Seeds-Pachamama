@@ -5427,10 +5427,10 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <instance part="JP3" gate="A" x="-76.2" y="116.84" rot="R180"/>
 <instance part="JP2" gate="G$1" x="60.96" y="172.72"/>
 <instance part="JP4" gate="G$1" x="83.82" y="167.64" rot="R180"/>
-<instance part="JP5" gate="A" x="73.66" y="195.58" rot="R270"/>
-<instance part="JP6" gate="A" x="71.12" y="144.78" rot="R90"/>
-<instance part="IN+" gate="G$1" x="50.8" y="149.86"/>
-<instance part="OUT+" gate="G$1" x="50.8" y="190.5"/>
+<instance part="JP5" gate="A" x="71.12" y="200.66" rot="R90"/>
+<instance part="JP6" gate="A" x="73.66" y="139.7" rot="R270"/>
+<instance part="IN+" gate="G$1" x="50.8" y="190.5"/>
+<instance part="OUT+" gate="G$1" x="50.8" y="149.86"/>
 <instance part="GND15" gate="1" x="91.44" y="144.78"/>
 </instances>
 <busses>
@@ -5543,6 +5543,13 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <wire x1="86.36" y1="190.5" x2="91.44" y2="190.5" width="0.1524" layer="91"/>
 <wire x1="91.44" y1="190.5" x2="91.44" y2="149.86" width="0.1524" layer="91"/>
 <junction x="91.44" y="149.86"/>
+<pinref part="JP6" gate="A" pin="1"/>
+<wire x1="86.36" y1="149.86" x2="86.36" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="144.78" x2="83.82" y2="142.24" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="10"/>
+<wire x1="86.36" y1="190.5" x2="86.36" y2="195.58" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="195.58" x2="83.82" y2="198.12" width="0.1524" layer="91"/>
+<junction x="86.36" y="190.5"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -5937,6 +5944,26 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <wire x1="-45.72" y1="40.64" x2="27.94" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="27.94" y1="40.64" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
 <junction x="27.94" y="30.48"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="JP2" gate="G$1" pin="1"/>
+<wire x1="50.8" y1="190.5" x2="58.42" y2="190.5" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="1"/>
+<wire x1="58.42" y1="190.5" x2="58.42" y2="195.58" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="195.58" x2="60.96" y2="198.12" width="0.1524" layer="91"/>
+<junction x="58.42" y="190.5"/>
+</segment>
+</net>
+<net name="N$34" class="0">
+<segment>
+<pinref part="JP2" gate="G$1" pin="17"/>
+<pinref part="JP6" gate="A" pin="10"/>
+<wire x1="58.42" y1="149.86" x2="58.42" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="144.78" x2="60.96" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="149.86" x2="58.42" y2="149.86" width="0.1524" layer="91"/>
+<junction x="58.42" y="149.86"/>
 </segment>
 </net>
 </nets>

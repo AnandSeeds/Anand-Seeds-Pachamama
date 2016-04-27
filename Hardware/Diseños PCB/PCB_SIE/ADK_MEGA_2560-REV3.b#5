@@ -1652,10 +1652,10 @@ design rules under a new name.</description>
 <attribute name="SPICEMODEL" value="NONE" x="93.218" y="-21.717" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="JP3" library="pinhead" package="1X10/90" value="" x="92.329" y="-10.287"/>
-<element name="OUT+" library="pinhead" package="1X02" value="" x="30.861" y="-16.002" rot="R90"/>
-<element name="IN+" library="pinhead" package="1X02" value="" x="72.009" y="-16.256" rot="R90"/>
-<element name="IN-" library="pinhead" package="1X01" value="" x="71.882" y="-35.179"/>
-<element name="IN--" library="pinhead" package="1X02" value="" x="30.734" y="-36.703" rot="R90"/>
+<element name="OUT+" library="pinhead" package="1X02" value="" x="31.369" y="-15.367" rot="R90"/>
+<element name="IN+" library="pinhead" package="1X02" value="" x="72.517" y="-15.621" rot="R90"/>
+<element name="IN-" library="pinhead" package="1X01" value="" x="72.39" y="-34.544"/>
+<element name="IN--" library="pinhead" package="1X02" value="" x="31.242" y="-36.068" rot="R90"/>
 </elements>
 <signals>
 <signal name="GND">

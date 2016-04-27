@@ -165,7 +165,7 @@
 <text x="7.81" y="68.2288" size="1.4224" layer="25" font="vector" ratio="12">RESET</text>
 <text x="7.81" y="65.6888" size="1.4224" layer="25" font="vector" ratio="12">3V3</text>
 <text x="7.8608" y="63.1996" size="1.4224" layer="25" font="vector" ratio="12">5V</text>
-<text x="8.1656" y="55.4526" size="1.4224" layer="25" font="vector" ratio="12">VIN</text>
+<text x="7.7846" y="55.4526" size="1.4224" layer="25" font="vector" ratio="12">VIN</text>
 <text x="7.8608" y="60.5326" size="1.4224" layer="25" font="vector" ratio="12">GND</text>
 <text x="51.181" y="37.846" size="1.4224" layer="25" font="vector" ratio="12">0</text>
 <text x="51.181" y="40.386" size="1.4224" layer="25" font="vector" ratio="12">1</text>
@@ -1654,8 +1654,8 @@ design rules under a new name.</description>
 <element name="JP3" library="pinhead" package="1X10/90" value="" x="120.523" y="-10.287"/>
 <element name="OUT+" library="pinhead" package="1X02" value="" x="30.861" y="-16.002" rot="R90"/>
 <element name="IN+" library="pinhead" package="1X02" value="" x="72.009" y="-16.256" rot="R90"/>
-<element name="OUT-" library="pinhead" package="1X01" value="" x="30.734" y="-35.179"/>
 <element name="IN-" library="pinhead" package="1X01" value="" x="71.882" y="-35.179"/>
+<element name="IN--" library="pinhead" package="1X02" value="" x="30.734" y="-36.703" rot="R90"/>
 </elements>
 <signals>
 <signal name="GND">

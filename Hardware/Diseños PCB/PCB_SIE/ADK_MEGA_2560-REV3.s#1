@@ -5138,7 +5138,7 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <instance part="GND13" gate="1" x="2.54" y="132.08"/>
 <instance part="GND14" gate="1" x="55.88" y="60.96" rot="R180"/>
 <instance part="JP3" gate="A" x="-76.2" y="116.84" rot="R180"/>
-<instance part="OUT+" gate="G$1" x="43.18" y="172.72" rot="R180"/>
+<instance part="OUT+" gate="G$1" x="45.72" y="190.5" rot="R180"/>
 <instance part="IN+" gate="G$1" x="48.26" y="149.86"/>
 <instance part="IN-" gate="G$1" x="73.66" y="149.86"/>
 <instance part="GND15" gate="1" x="81.28" y="167.64"/>

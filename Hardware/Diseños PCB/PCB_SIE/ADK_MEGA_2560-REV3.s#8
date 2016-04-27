@@ -4896,7 +4896,6 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <part name="DHT11" library="pinhead" deviceset="PINHD-1X3" device=""/>
 <part name="RTC" library="pinhead" deviceset="PINHD-1X5" device=""/>
 <part name="UVSENSOR" library="pinhead" deviceset="PINHD-2X5" device=""/>
-<part name="P+5" library="supply1" deviceset="VCC" device=""/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="P+6" library="supply1" deviceset="VCC" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
@@ -4993,7 +4992,6 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <instance part="DHT11" gate="A" x="78.74" y="55.88" rot="R180"/>
 <instance part="RTC" gate="A" x="91.44" y="86.36" rot="R180"/>
 <instance part="UVSENSOR" gate="A" x="190.5" y="-2.54"/>
-<instance part="P+5" gate="VCC" x="-35.56" y="73.66"/>
 <instance part="GND6" gate="1" x="-17.78" y="66.04"/>
 <instance part="P+6" gate="VCC" x="86.36" y="66.04"/>
 <instance part="GND7" gate="1" x="86.36" y="48.26"/>
@@ -5136,12 +5134,6 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <pinref part="P+4" gate="VCC" pin="VCC"/>
 <pinref part="R1" gate="G$1" pin="1A"/>
 <wire x1="-2.54" y1="68.58" x2="2.54" y2="68.58" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="P+5" gate="VCC" pin="VCC"/>
-<wire x1="-35.56" y1="71.12" x2="-33.02" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="GPS" gate="A" pin="4"/>
-<wire x1="-33.02" y1="71.12" x2="-33.02" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="DHT11" gate="A" pin="3"/>
@@ -5486,8 +5478,12 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <pinref part="JP3" gate="A" pin="2"/>
 </segment>
 </net>
-<net name="N$28" class="0">
+<net name="N$29" class="0">
 <segment>
+<pinref part="GPS" gate="A" pin="4"/>
+<wire x1="-33.02" y1="71.12" x2="-33.02" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="-33.02" y1="71.12" x2="-45.72" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="71.12" x2="-45.72" y2="40.64" width="0.1524" layer="91"/>
 <pinref part="POWER" gate="A" pin="4"/>
 <wire x1="38.1" y1="12.7" x2="33.02" y2="12.7" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="12.7" x2="33.02" y2="15.24" width="0.1524" layer="91"/>
@@ -5510,6 +5506,9 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <junction x="180.34" y="2.54"/>
 <wire x1="203.2" y1="17.78" x2="180.34" y2="17.78" width="0.1524" layer="91"/>
 <wire x1="180.34" y1="17.78" x2="180.34" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="-45.72" y1="40.64" x2="27.94" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="40.64" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
+<junction x="27.94" y="30.48"/>
 </segment>
 </net>
 </nets>

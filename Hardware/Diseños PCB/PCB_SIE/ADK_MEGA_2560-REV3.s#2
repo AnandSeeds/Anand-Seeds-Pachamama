@@ -5039,9 +5039,9 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <part name="JP3" library="pinhead" deviceset="PINHD-1X10" device="/90"/>
 <part name="OUT+" library="pinhead" deviceset="PINHD-1X2" device=""/>
 <part name="IN+" library="pinhead" deviceset="PINHD-1X2" device=""/>
-<part name="OUT-" library="pinhead" deviceset="PINHD-1X1" device=""/>
 <part name="IN-" library="pinhead" deviceset="PINHD-1X1" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
+<part name="IN--" library="pinhead" deviceset="PINHD-1X2" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5138,11 +5138,11 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <instance part="GND13" gate="1" x="2.54" y="132.08"/>
 <instance part="GND14" gate="1" x="55.88" y="60.96" rot="R180"/>
 <instance part="JP3" gate="A" x="-76.2" y="116.84" rot="R180"/>
-<instance part="OUT+" gate="G$1" x="45.72" y="190.5" rot="R180"/>
+<instance part="OUT+" gate="G$1" x="43.18" y="172.72" rot="R180"/>
 <instance part="IN+" gate="G$1" x="48.26" y="149.86"/>
-<instance part="OUT-" gate="G$1" x="73.66" y="190.5"/>
 <instance part="IN-" gate="G$1" x="73.66" y="149.86"/>
 <instance part="GND15" gate="1" x="81.28" y="167.64"/>
+<instance part="IN--" gate="G$1" x="73.66" y="170.18"/>
 </instances>
 <busses>
 </busses>
@@ -5251,10 +5251,6 @@ http://www.ee.siue.edu/~alozows/library/datasheets/BFR96.pdf</description>
 <wire x1="73.66" y1="165.1" x2="78.74" y2="170.18" width="0.1524" layer="91"/>
 <pinref part="GND15" gate="1" pin="GND"/>
 <wire x1="78.74" y1="170.18" x2="81.28" y2="170.18" width="0.1524" layer="91"/>
-<wire x1="73.66" y1="190.5" x2="78.74" y2="190.5" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="190.5" x2="81.28" y2="187.96" width="0.1524" layer="91"/>
-<wire x1="81.28" y1="187.96" x2="81.28" y2="170.18" width="0.1524" layer="91"/>
-<junction x="81.28" y="170.18"/>
 </segment>
 </net>
 <net name="VCC" class="0">
