@@ -56,8 +56,8 @@ unsigned long bytes_recibidos = 0;
 long startMillis;
 long secondsToFirstLocation = 0;
 
-float latitude = 0.0;
-float longitude = 0.0;
+float latitude = 269.0;
+float longitude = 269.0;
 
 char latit[12];
 char longi[12];
@@ -104,20 +104,37 @@ SoftwareSerial sim800l(17,16); //RX - TX
  */
 void setup() {
     configurarMonitorSerial();
+    configurarLCD();
+    validarAccesoPorClave();
+    ingresarAPN();
+    mensajeCargando();
     configurarGPRS();
     configurarRTC();
     configurarGPS();
-    configurarSensorDHT();
-    validarAccesoPorClave();
+    configurarSensorDHT();    
+}
+
+void configurarLCD(){
+    lcd.begin(16, 2);
+}
+
+void mensajeCargando(){
+    lcd.clear();
+    lcd.print("....Cargando....");
 }
 
 void validarAccesoPorClave(){
     pinMode(ledLogin, OUTPUT);//Iniciar estado led
     lcd.clear();
-    lcd.begin(16, 2);
-    Serial.println("Ingresa el pass:");
-    lcd.print("Ingresa el pass");
+    Serial.println("Ingresa Clave:");
+    lcd.print("Ingresa Clave:");
     while(!ingresarClave()){}
+}
+
+void ingresarAPN() {
+  const char  mensaje[] = "   Ingresa Operador Movil:    ";//El mensaje y el operador deben ser del mismo tamaño
+  const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN";
+  mostrarMensajesAutoscroll(mensaje,operador);
 }
 
 void configurarMonitorSerial(){
@@ -156,6 +173,7 @@ void loop() {
     mostrarRegistros2();//Nivel UV e Intensidad UV
     mostrarRegistros3();//Latitud y Longitud
     enviarDatosSIM();
+    delay(4000);
     visualizarVariablesSerial();
 }
 
@@ -319,7 +337,7 @@ void mostrarFecha() {
   lcd.print(myRTC.minutes);
   lcd.print(":");
   lcd.print(myRTC.seconds);
-  delay(2000);
+  delay(3000);
 }
 
 /**
@@ -405,6 +423,8 @@ void configurarGPRS() {
  * Se acitva si el peso se encuentra en un limite definido
  */
 void enviarDatosSIM() {
+    lcd.clear();
+    lcd.print("Enviando Datos...");
     //Se acitva si el peso se encuentra en un limite definido
     //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
     //Serial.println(debugGSM());
@@ -451,7 +471,9 @@ void enviarDatosSIM() {
     delay(500);
     sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
     Serial.println(debugGSM());
-    delay(4000);
+    //delay(4000);
+    lcd.clear();
+    lcd.print("Datos Enviados");
 }
 
 /**
@@ -507,7 +529,7 @@ boolean ingresarClave() {
             }
             if (iguales) {
                 lcd.setCursor(0, 0);
-                lcd.print("....Cargando....");
+                lcd.print("Ingreso Correcto");
                 lcd.setCursor(0, 1);
                 lcd.print("        ");
                 digitalWrite(ledLogin, HIGH);
@@ -571,6 +593,40 @@ void visualizarVariablesSerial(){
     Serial.println("Longitud:");
     Serial.println(longi);
     Serial.print("Envio de datos finalizado.\r\n");
+}
+
+void mostrarMensajeAutoscroll(char mensaje[]){
+  const int tamannoOp = strlen(mensaje)-1;
+  int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
+  int barrido = 0;
+  while(barrido<=tamannoOp-ancho){
+    for (int positionCounter = barrido; positionCounter <= ancho + barrido; positionCounter++) {
+      lcd.setCursor(positionCounter-barrido, 0);
+      lcd.print(String(mensaje[positionCounter]));
+    }
+    barrido++;
+    delay(500);
+    lcd.clear();
+  }
+}
+
+void mostrarMensajesAutoscroll(const char mensaje[], const char mensaje2[]){
+  //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
+  const int tamannoOp = strlen(mensaje2)-1;
+  int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
+  int barrido = 0;
+  
+  while(barrido<=tamannoOp-ancho){
+    for (int positionCounter = barrido; positionCounter <= ancho + barrido; positionCounter++) {
+      lcd.setCursor(positionCounter-barrido, 0);
+      lcd.print(String(mensaje[positionCounter]));
+      lcd.setCursor(positionCounter-barrido, 1);
+      lcd.print(String(mensaje2[positionCounter]));
+    }
+    barrido++;
+    delay(500);
+    lcd.clear();
+  }
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
