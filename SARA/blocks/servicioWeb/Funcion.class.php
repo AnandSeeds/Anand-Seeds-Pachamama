@@ -34,7 +34,9 @@ class Funcion {
 			return true;
 		}
 	}
-
+	function procesarAjax() {
+		include_once ($this->ruta . "funcion/ProcesarAjax.php");
+	}
 	function redireccionar($opcion, $valor = "") {
 		include_once ($this -> ruta . "/funcion/redireccionar.php");
 	}
@@ -53,7 +55,9 @@ class Funcion {
 
 		// Importante: Es adecuado que sea una variable llamada opcion o action la que guie el procesamiento:
 		//var_dump($_REQUEST);die('Hello');
-		if (isset($_REQUEST['opcion'])) {
+		if (isset ( $_REQUEST ['procesarAjax'] )) {
+			$this->procesarAjax ();
+		} else if (isset ( $_REQUEST ["opcion"] )) {
 			switch ($_REQUEST ['opcion']) {
 				case 'registrarDatos' :
 					include ($this -> ruta . '/funcion/RegistrarDatos.php');
@@ -69,8 +73,6 @@ class Funcion {
 			$_REQUEST['opcion'] = "mostrar";
 			include_once ($this -> ruta . "/funcion/formProcessor.php");
 		}
-
-		return $resultado;
 	}
 
 	function __construct() {

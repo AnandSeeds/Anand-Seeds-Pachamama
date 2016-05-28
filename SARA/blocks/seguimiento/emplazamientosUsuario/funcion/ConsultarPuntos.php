@@ -28,6 +28,12 @@ class ConsultarPuntos {
 		$conexion = "modelo";
 		$esteRecursoDB = $this->miConfigurador->fabricaConexiones->getRecursoDB ( $conexion );
 		
+		$cadenaSql = $this->miSql->getCadenaSql ( 'consultarPuntos', $_REQUEST );
+		
+		$resultado = $esteRecursoDB->ejecutarAcceso ( $cadenaSql, "consultar" );
+		json_encode($resultado);
+		exit();
+		
 		$esteBloque = $this->miConfigurador->getVariableConfiguracion ( "esteBloque" );
 		
 		$rutaBloque = $this->miConfigurador->getVariableConfiguracion ( "raizDocumento" ) . "/blocks/asignacionPuntajes/salariales/";
@@ -36,11 +42,6 @@ class ConsultarPuntos {
 		
 		$host = $this->miConfigurador->getVariableConfiguracion ( "host" ) . $this->miConfigurador->getVariableConfiguracion ( "site" ) . "/blocks/asignacionPuntajes/salariales/" . $esteBloque ['nombre'];
 		
-		$cadenaSql = $this->miSql->getCadenaSql ( 'consultarPuntos', $_REQUEST );
-		
-		$resultado = $esteRecursoDB->ejecutarAcceso ( $cadenaSql, "consultar" );
-		json_encode($resultado);
-		die;
 		
 		if ($resultado) {
 			redireccion::redireccionar ( 'inserto',  $_REQUEST['docenteRegistrar']);
