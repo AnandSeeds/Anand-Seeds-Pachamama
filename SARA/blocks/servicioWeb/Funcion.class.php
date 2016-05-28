@@ -73,8 +73,6 @@ class Funcion {
 			$_REQUEST['opcion'] = "mostrar";
 			include_once ($this -> ruta . "/funcion/formProcessor.php");
 		}
-
-		return $resultado;
 	}
 
 	function __construct() {

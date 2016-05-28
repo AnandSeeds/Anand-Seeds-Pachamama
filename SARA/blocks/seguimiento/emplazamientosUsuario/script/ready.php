@@ -1,177 +1,20 @@
 <?php
-
+//echo '</script>';
+$enlace = "action=index.php";
+$enlace .= "&bloqueNombre=servicioWeb";
+$enlace .= "&bloqueGrupo=";
+$enlace .= "&procesarAjax=true";
+$enlace .= "&funcion=consultarDatos";
+$directorio = $this->miConfigurador->getVariableConfiguracion ( "host" );
+$directorio .= $this->miConfigurador->getVariableConfiguracion ( "site" ) . "/index.php?";
+$directorio .= $this->miConfigurador->getVariableConfiguracion ( "enlace" );
+$enlace = $this->miConfigurador->fabricaConexiones->crypto->codificar_url ( $enlace, $directorio );
+//var_dump($enlace);
+$datos = file_get_contents($enlace.'&id=1&limit=10');
 ?>
-var datos = [
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34524",
-        "longitud": "3.34524",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34528",
-        "longitud": "3.34528", 
-        "1": "-76.545479",
-        "latitud": "-76.545479"
-    },
-    {
-        "0": "3.34529",
-        "longitud": "3.34529",
-        "1": "-76.545532",
-        "latitud": "-76.545532"
-    },
-    {
-        "0": "3.34522",
-        "longitud": "3.34522",
-        "1": "-76.545464",
-        "latitud": "-76.545464"
-    },
-    {
-        "0": "3.34487",
-        "longitud": "3.34487",
-        "1": "-76.545403",
-        "latitud": "-76.545403"
-    },
-    {
-        "0": "3.34457",
-        "longitud": "3.34457",
-        "1": "-76.545303",
-        "latitud": "-76.545303"
-    },
-    {
-        "0": "3.34429",
-        "longitud": "3.34429",
-        "1": "-76.54525",
-        "latitud": "-76.54525"
-    },
-    {
-        "0": "3.3437",
-        "longitud": "3.3437",
-        "1": "-76.545052",
-        "latitud": "-76.545052"
-    },
-    {
-        "0": "3.34344",
-        "longitud": "3.34344",
-        "1": "-76.54496",
-        "latitud": "-76.54496"
-    },
-    {
-        "0": "3.34329",
-        "longitud": "3.34329",
-        "1": "-76.544693",
-        "latitud": "-76.544693"
-    },
-    {
-        "0": "3.34332",
-        "longitud": "3.34332",
-        "1": "-76.544693",
-        "latitud": "-76.544693"
-    },
-    {
-        "0": "3.34336",
-        "longitud": "3.34336",
-        "1": "-76.544472",
-        "latitud": "-76.544472"
-    },
-    {
-        "0": "3.3445",
-        "longitud": "3.3445",
-        "1": "-76.544373",
-        "latitud": "-76.544373"
-    },
-    {
-        "0": "3.34482",
-        "longitud": "3.34482",
-        "1": "-76.544449",
-        "latitud": "-76.544449"
-    },
-    {
-        "0": "3.34514",
-        "longitud": "3.34514",
-        "1": "-76.544449",
-        "latitud": "-76.544449"
-    },
-    {
-        "0": "3.34559",
-        "longitud": "3.34559",
-        "1": "-76.544891",
-        "latitud": "-76.544891"
-    },
-    {
-        "0": "3.34561",
-        "longitud": "3.34561",
-        "1": "-76.545212",
-        "latitud": "-76.545212"
-    },
-    {
-        "0": "3.34584",
-        "longitud": "3.34584",
-        "1": "-76.545372",
-        "latitud": "-76.545372"
-    },
-    {
-        "0": "3.34586",
-        "longitud": "3.34586",
-        "1": "-76.545708",
-        "latitud": "-76.545708"
-    },
-    {
-        "0": "3.34547",
-        "longitud": "3.34547",
-        "1": "-76.54583",
-        "latitud": "-76.54583"
-    },
-    {
-        "0": "3.34514",
-        "longitud": "3.34514",
-        "1": "-76.545692",
-        "latitud": "-76.545692"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    },
-    {
-        "0": "3.34526",
-        "longitud": "3.34526",
-        "1": "-76.54557",
-        "latitud": "-76.54557"
-    }
-];
+//var enlace = "<?php echo $enlace.'&id=1&limit=10'; ?>";
 
+var datos = <?php echo $datos; ?>;
 
 var features = new Array();
 for (var i = 0; i < datos.length; i++){
@@ -188,85 +31,86 @@ for (var i = 0; i < datos.length; i++){
 	};
 	features.push(geometry);
 }
+
 var bicycleRental = {
 	"type" : "FeatureCollection",
 	"features" : features
 }
-
-var bicycleRental2 = {
-	"type" : "FeatureCollection",
-	"features" : [{
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9998241, 39.7471494]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Huerta"
-		},
-		"id" : 51
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9983545, 39.7502833]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Jardín"
-		},
-		"id" : 52
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9963919, 39.7444271]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Jardín"
-		},
-		"id" : 54
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9960754, 39.7498956]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Huerta"
-		},
-		"id" : 55
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9933717, 39.7477264]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Huerta"
-		},
-		"id" : 57
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9913392, 39.7432392]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Huerta"
-		},
-		"id" : 58
-	}, {
-		"geometry" : {
-			"type" : "Point",
-			"coordinates" : [-104.9788452, 39.6933755]
-		},
-		"type" : "Feature",
-		"properties" : {
-			"popupContent" : "Huerta"
-		},
-		"id" : 74
-	}]
-};
+console.log(bicycleRental);
+// var bicycleRental2 = {
+	// "type" : "FeatureCollection",
+	// "features" : [{
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9998241, 39.7471494]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Huerta"
+		// },
+		// "id" : 51
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9983545, 39.7502833]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Jardín"
+		// },
+		// "id" : 52
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9963919, 39.7444271]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Jardín"
+		// },
+		// "id" : 54
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9960754, 39.7498956]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Huerta"
+		// },
+		// "id" : 55
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9933717, 39.7477264]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Huerta"
+		// },
+		// "id" : 57
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9913392, 39.7432392]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Huerta"
+		// },
+		// "id" : 58
+	// }, {
+		// "geometry" : {
+			// "type" : "Point",
+			// "coordinates" : [-104.9788452, 39.6933755]
+		// },
+		// "type" : "Feature",
+		// "properties" : {
+			// "popupContent" : "Huerta"
+		// },
+		// "id" : 74
+	// }]
+// };
 
 
 // var freeBus = {

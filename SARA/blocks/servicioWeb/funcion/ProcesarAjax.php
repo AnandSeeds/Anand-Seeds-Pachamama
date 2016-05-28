@@ -13,11 +13,14 @@ $rutaBloque = $this->miConfigurador->getVariableConfiguracion ( "rutaBloque" );
 
 //Estas funciones se llaman desde ajax.php y estas a la vez realizan las consultas de Sql.class.php
 switch ($_REQUEST ['funcion']) {
-	case 'actualizarNotificaciones':
-		$conexion = "estructura";
-		$esteRecursoDB = $this->miConfigurador->fabricaConexiones->getRecursoDB ( $conexion );
-		$cadenaSql = $this->sql->getCadenaSql ( 'actualizarNotificaciones', $_REQUEST ['usuario']);
-		$actualizacion = $esteRecursoDB->ejecutarAcceso ( $cadenaSql, "actualizacion" );
+	case 'consultarDatos':
+		//Necesita los parámetros &id=1&limit=10
+		$conexion = "modelo_emplazamiento";
+		$esteRecursoDB = $this -> miConfigurador -> fabricaConexiones -> getRecursoDB($conexion);
+		$cadenaSql = $this -> sql -> getCadenaSql('consultarDatos', $_REQUEST);
+		
+		$resultado = $esteRecursoDB -> ejecutarAcceso($cadenaSql, 'busqueda');
+		echo json_encode($resultado);
 		break;
 	case 'consultarEnlacesUsuario':
 		// $enlace = "action=index.php";
@@ -163,5 +166,4 @@ switch ($_REQUEST ['funcion']) {
     default:
         die('Asigne un valor a la variable \'funcion\'');
 }
-die('Debe poner el parámetro \'funcion\'');
 ?>
