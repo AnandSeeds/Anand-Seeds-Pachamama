@@ -66,7 +66,7 @@ char longi[12];
 /****** INICIO HUMEDAD Y TEMPERATURA AMBIENTE ******/
 #include "DHT.h"
 #define DHTPIN 6
-#define DHTTYPE DHT22 // DHT 22 (AM2302)
+#define DHTTYPE DHT11 // DHT 22 / 11 (AM2302)
 DHT dht(DHTPIN, DHTTYPE);
 float h;
 float t;
@@ -103,18 +103,19 @@ SoftwareSerial sim800l(17,16); //RX - TX
  ***********************************************************************
  */
 void setup() {
-    validarAccesoPorClave();
     configurarMonitorSerial();
     configurarGPRS();
     configurarRTC();
     configurarGPS();
     configurarSensorDHT();
+    validarAccesoPorClave();
 }
 
 void validarAccesoPorClave(){
     pinMode(ledLogin, OUTPUT);//Iniciar estado led
     lcd.clear();
     lcd.begin(16, 2);
+    Serial.println("Ingresa el pass:");
     lcd.print("Ingresa el pass");
     while(!ingresarClave()){}
 }
@@ -125,7 +126,7 @@ void configurarMonitorSerial(){
 }
 
 void configurarRTC(){
-    myRTC.setDS1302Time(00, 25, 4, 6, 27, 2, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
+    myRTC.setDS1302Time(00, 13, 9, 1, 16, 5, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
 }
 
 void configurarSensorDHT(){    
@@ -443,8 +444,8 @@ void enviarDatosSIM() {
     Serial.println(cadena);
     sim800l.println(cadena);
     
-    pushSlow("\r\n",100,100); //Envia un salto de linea
-    pushSlow("\x1A",100,100);//ctlr+z para finalizar el envio o 0x1A
+    pushSlow((char*)"\r\n",100,100); //Envia un salto de linea
+    pushSlow((char*)"\x1A",100,100);//ctlr+z para finalizar el envio o 0x1A
     //sim800l.write(0x1A);//ctlr+z para finalizar el envio o 0x1A
     Serial.println(debugGSM());
     delay(500);
@@ -474,7 +475,7 @@ void pushSlow(char* command,int charaterDelay,int endLineDelay) {
  */
 char *debugGSM()  {// devuelve el ``contenido de un objeto apuntado por un apuntador''. 
     int i=0;
-    char cad[255]="\0";
+    static char cad[255]="\0";
     char c='\0';    
     strcpy(cad,"");
     while(sim800l.available()>0) {
@@ -573,3 +574,4 @@ void visualizarVariablesSerial(){
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
+
