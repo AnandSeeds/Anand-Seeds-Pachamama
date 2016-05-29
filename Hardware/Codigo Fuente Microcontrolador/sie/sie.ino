@@ -95,6 +95,7 @@ int REF_3V3 = A1; // 3.3V power on the Arduino board
 /****** INICIO MODULO GSM/GPRS ******/
 #include <SoftwareSerial.h>
 SoftwareSerial sim800l(17,16); //RX - TX
+String operadorAPN = "";
 /****** FIN MODULO GSM/GPRS ******/
 
 /*
@@ -134,7 +135,32 @@ void validarAccesoPorClave(){
 void ingresarAPN() {
   const char  mensaje[] = "   Ingresa Operador Movil:    ";//El mensaje y el operador deben ser del mismo tamaño
   const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN";
-  mostrarMensajesAutoscroll(mensaje,operador);
+  mostrarMensajesAutoscrollConFuncion(mensaje,operador,detectarTeclaOperador);
+}
+
+bool detectarTeclaOperador(){
+    char key = keypad.getKey();
+    Serial.println(String(key));
+    /////////////////////////////////////////Números del 1 al 3
+    if (key) {
+      switch (key) {
+        case '1':
+            operadorAPN = String("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\"");
+            Serial.println("Configurando APN Claro");
+            break;
+        case '2':
+            operadorAPN = String("AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\"");
+            Serial.println("Configurando APN Movistar");
+            break;
+        case '3':
+            operadorAPN = String("AT+CSTT=\"web.vmc.net.co\",\"\",\"\"");
+            Serial.println("Configurando APN Virgin Mobile");
+            break;
+      }
+      return true;
+    } else {
+      return false;
+    }
 }
 
 void configurarMonitorSerial(){
@@ -408,9 +434,7 @@ void configurarGPRS() {
     delay(500);
     
     // Configurar tarea y configura el APN
-    //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
-    //sim800l.println(F("AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\""));
-    sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
+    sim800l.println(operadorAPN);
     Serial.println(debugGSM());
     delay(500);
     
@@ -595,7 +619,7 @@ void visualizarVariablesSerial(){
     Serial.print("Envio de datos finalizado.\r\n");
 }
 
-void mostrarMensajeAutoscroll(char mensaje[]){
+void mostrarMensajeAutoscroll(const char mensaje[]){
   const int tamannoOp = strlen(mensaje)-1;
   int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
   int barrido = 0;
@@ -627,6 +651,40 @@ void mostrarMensajesAutoscroll(const char mensaje[], const char mensaje2[]){
     delay(500);
     lcd.clear();
   }
+}
+
+void mostrarMensajesAutoscrollConFuncion(const char mensaje[], const char mensaje2[],bool (*fun)() ){
+  //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
+  const int tamannoOp = strlen(mensaje2)-1;
+  int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
+
+  VOLVERAMOSTRAR:
+  int barrido = 0;
+  
+  while(barrido<=tamannoOp-ancho){
+    for (int positionCounter = barrido; positionCounter <= ancho + barrido; positionCounter++) {
+      lcd.setCursor(positionCounter-barrido, 0);
+      lcd.print(String(mensaje[positionCounter]));
+      lcd.setCursor(positionCounter-barrido, 1);
+      lcd.print(String(mensaje2[positionCounter]));
+      bool siTecla = (*fun)();
+      if(siTecla){
+        return;
+      }
+    }
+    barrido++;
+    int temporizador = 100;
+    while (temporizador>0){
+      bool siTecla = (*fun)();
+      if(siTecla){
+        return;
+      }
+      temporizador--;
+    }
+    lcd.clear();
+  }
+
+  goto VOLVERAMOSTRAR;
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
