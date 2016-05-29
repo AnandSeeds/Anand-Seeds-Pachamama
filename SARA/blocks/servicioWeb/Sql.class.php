@@ -128,7 +128,7 @@ class Sql extends \Sql {
 				$cadenaSql .= " '" . $variable['hr'] . "',";
 				$cadenaSql .= " '" . $variable['nuv'] . "',";
 				$cadenaSql .= " '" . $variable['iuv'] . "',";
-				$cadenaSql .= " public.ST_GeomFromText('POINT(" . $variable['lat'] . ' ' . $variable['lon'] . ")', 26910)";
+				$cadenaSql .= " public.ST_GeomFromText('POINT(" . $variable['lon'] . ' ' . $variable['lat'] . ")', 4326)";
 				$cadenaSql .= " );";
 				break;
 
