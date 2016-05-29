@@ -1,3 +1,14 @@
+<?php
+$enlace = "action=index.php";
+$enlace .= "&bloqueNombre=servicioWeb";
+$enlace .= "&bloqueGrupo=";
+$enlace .= "&procesarAjax=true";
+$enlace .= "&funcion=consultarDatos";
+$directorio = $this->miConfigurador->getVariableConfiguracion ( "host" );
+$directorio .= $this->miConfigurador->getVariableConfiguracion ( "site" ) . "/index.php?";
+$directorio .= $this->miConfigurador->getVariableConfiguracion ( "enlace" );
+$enlace = $this->miConfigurador->fabricaConexiones->crypto->codificar_url ( $enlace, $directorio );
+?>
 <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script>
 	$(document).ready(init);
@@ -10,7 +21,7 @@
 	function showData() {
 		$.ajax({
 			type : "GET",
-			url : "/index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOUFl-Ti5SyD_EjSpw1wd66mu_Wk7BHhYCRci6ci6FIKDC9TDkUZgGwDmjpNyZD8TEhe2kjK5lHTxLQiP6dk9Wy&id=1&limit=10"
+			url : "<?php echo $enlace.'&id=1&limit=10'; ?>"
 		}).done(function(msg) {
 			$("#demo2").html(msg);
 			dato = JSON.parse(msg);
@@ -90,7 +101,7 @@
 	function cargarGrafica() {
 		$.ajax({
 			type : "GET",
-			url : "/index.php?data=0Ihzhj0geg_u16zk9AJNLlGl9F-9kE_bxeocU3n_RBOUFl-Ti5SyD_EjSpw1wd66mu_Wk7BHhYCRci6ci6FIKDC9TDkUZgGwDmjpNyZD8TEhe2kjK5lHTxLQiP6dk9Wy&id=1&limit=10"
+			url : "<?php echo $enlace.'&id=1&limit=10'; ?>"
 		}).done(function(msg) {
 			dato = JSON.parse(msg);
 		});
