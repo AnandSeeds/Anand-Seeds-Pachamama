@@ -9,9 +9,11 @@ if (!isset($GLOBALS['autorizado'])) {
 
 class Form {
 	var $miConfigurador;
+	var $miInspectorHTML;
 	var $lenguaje;
 	var $miFormulario;
 	var $site;
+	var $sesionUsuario;
 	
 	function __construct($lenguaje, $formulario) {
 		$this -> miConfigurador = \Configurador::singleton();
@@ -25,6 +27,8 @@ class Form {
 		$this -> miFormulario = $formulario;
 		
 		$this -> site = $this->miConfigurador->getVariableConfiguracion ( "rutaBloque" );
+		
+		$this->sesionUsuario = \Sesion::singleton ();
 	}
 
 	function miForm() {
@@ -39,10 +43,15 @@ class Form {
         * Si se utiliza esta técnica es necesario realizar un mezcla entre este arreglo y el específico en cada control:
         * $atributos= array_merge($atributos,$atributosGlobales);
         */
-        $atributosGlobales ['campoSeguro'] = 'tiempo';
-        $_REQUEST['tiempo']=time();
+        
 		// Rescatar los datos de este bloque
-		include $this->site.'formulario/paginaInicio.html.php';
+		
+		$_REQUEST ['usuario'] = $this->sesionUsuario->getValorSesion('idUsuario');
+		if($_REQUEST ['usuario']){
+			include $this->site.'funcion/Logout.php';
+		}
+		include $this->site.'formulario/paginaLogin.html.php';
+		
 	}
 
 	function mensaje() {

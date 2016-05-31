@@ -1,4 +1,7 @@
 <?php
+$atributosGlobales ['campoSeguro'] = 'tiempo';
+$_REQUEST['tiempo']=time();
+
 $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBloque");
 //var_dump($_REQUEST);
 ?>
@@ -75,7 +78,7 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 						$atributos['titulo'] = $this -> lenguaje -> getCadena($esteCampo . 'Titulo');
 						$atributos['deshabilitado'] = false;
 						$atributos['tamanno'] = 20;
-						$atributos['maximoTamanno'] = '10';
+						$atributos['maximoTamanno'] = '50';
 						$tab++;
 						// Aplica atributos globales al control
 						$atributos = array_merge($atributos, $atributosGlobales);
@@ -105,7 +108,7 @@ $rutaUrlBloque = $this -> miConfigurador -> getVariableConfiguracion("rutaUrlBlo
 						$atributos['titulo'] = $this -> lenguaje -> getCadena($esteCampo . 'Titulo');
 						$atributos['deshabilitado'] = false;
 						$atributos['tamanno'] = 20;
-						$atributos['maximoTamanno'] = '10';
+						$atributos['maximoTamanno'] = '50';
 						$tab++;
 						// Aplica atributos globales al control
 						$atributos = array_merge($atributos, $atributosGlobales);
