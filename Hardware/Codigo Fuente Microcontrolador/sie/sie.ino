@@ -26,7 +26,7 @@ byte colPins[COLS] = { 53, 51, 49, 47 }; // connect to the column pinouts of the
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 int posicion = 0;
-const char clave[] = "A";
+const char clave[] = "ABC";
 const int tamannoClave = strlen(clave);
 char passin[tamannoClave - 1];//indice 3 denota 4 elementos 0,1,2,3...
 int ledLogin = 5;
@@ -98,6 +98,11 @@ SoftwareSerial sim800l(17,16); //RX - TX
 String operadorAPN = "";
 /****** FIN MODULO GSM/GPRS ******/
 
+/****** INICIO VOLTIMETRO ******/
+int pinSonda = A6;
+float escala = 0.1; //100 para voltios, 0.1 para milivoltios
+/****** FIN VOLTIMETRO ******/
+
 /*
  ***********************************************************************
  *              SETUP CONFIGURACIÓN INICIAL
@@ -106,6 +111,7 @@ String operadorAPN = "";
 void setup() {
     configurarMonitorSerial();
     configurarLCD();
+    mensajeBienvenida();
     validarAccesoPorClave();
     ingresarAPN();
     mensajeCargando();
@@ -156,6 +162,9 @@ bool detectarTeclaOperador(){
             operadorAPN = String("AT+CSTT=\"web.vmc.net.co\",\"\",\"\"");
             Serial.println("Configurando APN Virgin Mobile");
             break;
+        default:
+            return false;
+            break;
       }
       return true;
     } else {
@@ -188,6 +197,8 @@ void configurarGPS(){
  ***********************************************************************
  */
 void loop() {
+    sensarEstadoBateria();
+    mensajeCargando();
     GetTimeRTC();
     GetGPS();
     GetHT();
@@ -205,6 +216,22 @@ void loop() {
 
 /****** INICIO FUNCIONES ADICIONALES ******/
 
+void sensarEstadoBateria(void){
+   float lectura = analogRead(pinSonda);
+   lectura = map(lectura, 0, 1023, 0, 500);
+   float voltaje = lectura / escala;
+   //voltaje = 3100.01; //para probarlo
+   if (voltaje < 3400){
+      char *mensaje1 = (char*)"    Nivel de carga baja,    ";
+      char *mensaje2 = (char*)"    Cargue el dispositivo.  ";
+      mostrarMensajesAutoscroll(mensaje1,mensaje2);
+      if (voltaje<3200){ 
+        char *mensaje  = (char*)"    NIVEL CRITICO DE BATERIA    ";
+        mostrarMensajeAutoscroll(mensaje);
+        sensarEstadoBateria();
+      }
+   }
+}
 void GetTimeRTC(){
     myRTC.updateTime();
     // Delay so the program doesn't print non-stop
@@ -544,7 +571,7 @@ boolean ingresarClave() {
             // print the number of seconds since reset:
             lcd.print(key);
             boolean iguales = true;
-            for (int i = 0; i < sizeof(clave); i++) {
+            for (int i = 0; i < strlen(clave); i++) {
               if(passin[i] == clave[i]){
                 iguales = iguales && true;
               } else {
@@ -619,8 +646,8 @@ void visualizarVariablesSerial(){
     Serial.print("Envio de datos finalizado.\r\n");
 }
 
-void mostrarMensajeAutoscroll(const char mensaje[]){
-  const int tamannoOp = strlen(mensaje)-1;
+void mostrarMensajeAutoscroll(char *mensaje){
+  int tamannoOp = strlen(mensaje)-1;
   int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
   int barrido = 0;
   while(barrido<=tamannoOp-ancho){
@@ -634,7 +661,7 @@ void mostrarMensajeAutoscroll(const char mensaje[]){
   }
 }
 
-void mostrarMensajesAutoscroll(const char mensaje[], const char mensaje2[]){
+void mostrarMensajesAutoscroll(char *mensaje, char *mensaje2){
   //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
   const int tamannoOp = strlen(mensaje2)-1;
   int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
@@ -673,7 +700,7 @@ void mostrarMensajesAutoscrollConFuncion(const char mensaje[], const char mensaj
       }
     }
     barrido++;
-    int temporizador = 100;
+    int temporizador = 150;
     while (temporizador>0){
       bool siTecla = (*fun)();
       if(siTecla){
@@ -685,6 +712,12 @@ void mostrarMensajesAutoscrollConFuncion(const char mensaje[], const char mensaj
   }
 
   goto VOLVERAMOSTRAR;
+}
+
+void mensajeBienvenida(){
+  char *mensaje  = (char*)"    Bienvenido a SIE    ";
+  char *mensaje2 = (char*)"    Cultivando Futuro.  ";
+  mostrarMensajesAutoscroll(mensaje,mensaje2);
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
