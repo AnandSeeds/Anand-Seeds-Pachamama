@@ -2,13 +2,14 @@
 
 class Logout {
 	
-	var $miSesionSso;
+	var $sesionUsuario;
 		
 	function __construct() {
-		$this->miSesionSso = \SesionSso::singleton ();
+		$this->sesionUsuario = \Sesion::singleton ();
 	}
-	function procesarFormulario() {
-		return $this->miSesionSso->terminarSesion();
+	function procesarFormulario() {		
+		$sesionUsuarioId = $this->sesionUsuario->numeroSesion();
+    	$this->sesionUsuario->terminarSesion($sesionUsuarioId);
 	}
 }
 
