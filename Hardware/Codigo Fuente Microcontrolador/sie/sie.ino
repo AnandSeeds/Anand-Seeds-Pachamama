@@ -149,8 +149,7 @@ void validarAccesoPorClave() {
 void ingresarAPN() {
   const char mensaje[] = "   Ingresa Operador Movil:    "; //El mensaje y el operador deben ser del mismo tamaño
   const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN";
-  mostrarMensajesAutoscrollConFuncion(mensaje, operador,
-      detectarTeclaOperador);
+  mostrarMensajesAutoscrollConFuncion(mensaje, operador,detectarTeclaOperador);
 }
 
 /*
@@ -502,7 +501,10 @@ float mapfloat(float x, float in_min, float in_max, float out_min,
 void enviarDatosSIM() {
   lcd.clear();
   if(latitude==204&&longitude==269){
-    lcd.print("GPS aun NO disponibe...");
+    char *mensaje = (char*) "    GPS NO disponible...    ";
+    mostrarMensajeAutoscroll(mensaje);
+    GetGPS();
+    enviarDatosSIM();
     return;
   } else {
     lcd.print("Enviando Datos...");
@@ -765,5 +767,6 @@ void mostrarMensajesAutoscrollConFuncion(const char mensaje[],
 }
 
 /****** FIN FUNCIONES ADICIONALES ******/
+
 
 
