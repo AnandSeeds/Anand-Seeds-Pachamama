@@ -503,7 +503,13 @@ float mapfloat(float x, float in_min, float in_max, float out_min,
  */
 void enviarDatosSIM() {
   lcd.clear();
-  lcd.print("Enviando Datos...");
+  if(latitude==204&&longitude==269){
+    lcd.print("GPS aun NO disponibe...");
+    return;
+  } else {
+    lcd.print("Enviando Datos...");
+  }
+  
   //Se acitva si el peso se encuentra en un limite definido
   //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
   //Serial.println(debugGSM());
