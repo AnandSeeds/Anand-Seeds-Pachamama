@@ -54,8 +54,8 @@ unsigned long bytes_recibidos = 0;
 long startMillis;
 long secondsToFirstLocation = 0;
 
-float latitude = 4.0;
-float longitude = 69.0;
+float latitude = 204.0;
+float longitude = 269.0;
 
 char latit[12];
 char longi[12];
@@ -516,6 +516,7 @@ void enviarDatosSIM() {
   Serial.println(debugGSM());
   delay(2000);
 
+  //Visualización transparente pero no funciona
   //sim800l.println(F("AT+CIPMODE=1")); //Inicia conexión UDP o TCP
   //Serial.println(debugGSM());
   //delay(2000);
