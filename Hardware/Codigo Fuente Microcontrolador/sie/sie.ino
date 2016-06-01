@@ -239,7 +239,8 @@ void configurarGPRS() {
     delay(500);
     
     // Configurar tarea y configura el APN
-    sim800l.println(operadorAPN);
+    //sim800l.println(operadorAPN);
+    sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
     Serial.println(debugGSM());
     delay(500);
     
