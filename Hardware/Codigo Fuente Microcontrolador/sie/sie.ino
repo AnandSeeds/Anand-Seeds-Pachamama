@@ -56,8 +56,8 @@ unsigned long bytes_recibidos = 0;
 long startMillis;
 long secondsToFirstLocation = 0;
 
-float latitude = 269.0;
-float longitude = 269.0;
+float latitude = 4.0;
+float longitude = 69.0;
 
 char latit[12];
 char longi[12];
@@ -130,6 +130,12 @@ void mensajeCargando(){
     lcd.print("....Cargando....");
 }
 
+void mensajeBienvenida(){
+  char *mensaje  = (char*)"    Bienvenido a SIE    ";
+  char *mensaje2 = (char*)"    Cultivando Futuro.  ";
+  mostrarMensajesAutoscroll(mensaje,mensaje2);
+}
+
 void validarAccesoPorClave(){
     pinMode(ledLogin, OUTPUT);//Iniciar estado led
     lcd.clear();
@@ -138,12 +144,18 @@ void validarAccesoPorClave(){
     while(!ingresarClave()){}
 }
 
+/*
+ *  Funcion mensaje 
+ */
 void ingresarAPN() {
   const char  mensaje[] = "   Ingresa Operador Movil:    ";//El mensaje y el operador deben ser del mismo tamaño
   const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN";
   mostrarMensajesAutoscrollConFuncion(mensaje,operador,detectarTeclaOperador);
 }
 
+/*
+ *  Funcion para seleccionar operadorAPN por teclado matricial
+ */
 bool detectarTeclaOperador(){
     char key = keypad.getKey();
     Serial.println(String(key));
@@ -178,7 +190,7 @@ void configurarMonitorSerial(){
 }
 
 void configurarRTC(){
-    myRTC.setDS1302Time(00, 13, 9, 1, 16, 5, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
+    myRTC.setDS1302Time(00, 14, 23, 2, 31, 5, 2016); // seg, min, hora, dia de la semana, dia del mes, mes, año
 }
 
 void configurarSensorDHT(){    
@@ -189,6 +201,51 @@ void configurarGPS(){
     pinMode(GPS_TX_DIGITAL_OUT_PIN, INPUT);
     pinMode(GPS_RX_DIGITAL_OUT_PIN, INPUT);
     gpsSerial.begin(9600);
+}
+
+/**
+ * Se configura el módulo GSM
+ */
+void configurarGPRS() {
+    Serial.println("Iniciando configuracion del modulo GSM"); 
+    sim800l.println(F("AT"));
+    delay(500);
+    Serial.println(debugGSM());
+    sim800l.println(F("AT+CBC"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+    delay(500);
+    Serial.println(debugGSM());
+    sim800l.println(F("AT+IPR=19200"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
+    delay(500);
+    Serial.println(debugGSM());
+    
+    sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
+    delay(500);
+    Serial.println(debugGSM());
+    
+    sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPSHUT")); // Resetea las direcciones IP
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CGATT=1")); // Verifica si el gprs esta activo o no
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPSTATUS")); //Verifica si la pila o stack IP es inicializada
+    Serial.println(debugGSM());
+    delay(500);
+    sim800l.println(F("AT+CIPMUX=0")); //Esta la conexión en modo simple(udp/tcp cliente o tcp server)
+    Serial.println(debugGSM());
+    delay(500);
+    
+    // Configurar tarea y configura el APN
+    sim800l.println(operadorAPN);
+    Serial.println(debugGSM());
+    delay(500);
+    
+    sim800l.println(F("AT+CIICR")); // Levantar conexión wireless(GPRS o CSD)
+    Serial.println(debugGSM());
+    delay(500);
 }
 
 /*
@@ -216,6 +273,9 @@ void loop() {
 
 /****** INICIO FUNCIONES ADICIONALES ******/
 
+/*
+ *  Funcion para el sensado de baterias
+ */
 void sensarEstadoBateria(void){
    float lectura = analogRead(pinSonda);
    lectura = map(lectura, 0, 1023, 0, 500);
@@ -232,6 +292,10 @@ void sensarEstadoBateria(void){
       }
    }
 }
+
+/*
+ *  Funcion para obtener Fecha y Hora con el uso de la RTC
+ */
 void GetTimeRTC(){
     myRTC.updateTime();
     // Delay so the program doesn't print non-stop
@@ -425,50 +489,6 @@ float mapfloat(float x, float in_min, float in_max, float out_min, float out_max
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-/**
- * Se configura el módulo GSM
- */
-void configurarGPRS() {
-    Serial.println("Iniciando configuracion del modulo GSM"); 
-    sim800l.println(F("AT"));
-    delay(500);
-    Serial.println(debugGSM());
-    sim800l.println(F("AT+CBC"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
-    delay(500);
-    Serial.println(debugGSM());
-    sim800l.println(F("AT+IPR=19200"));  //Retorna el estado de la bateria del dispositivo, el % y milivol
-    delay(500);
-    Serial.println(debugGSM());
-    
-    sim800l.println(F("AT+CSQ")); // Retorna la calidad de la señal que depende de la antena y la localizacion
-    delay(500);
-    Serial.println(debugGSM());
-    
-    sim800l.println(F("AT+CREG=1")); // Verifica si la simcard a sido o no registrada
-    Serial.println(debugGSM());
-    delay(500);
-    sim800l.println(F("AT+CIPSHUT")); // Resetea las direcciones IP
-    Serial.println(debugGSM());
-    delay(500);
-    sim800l.println(F("AT+CGATT=1")); // Verifica si el gprs esta activo o no
-    Serial.println(debugGSM());
-    delay(500);
-    sim800l.println(F("AT+CIPSTATUS")); //Verifica si la pila o stack IP es inicializada
-    Serial.println(debugGSM());
-    delay(500);
-    sim800l.println(F("AT+CIPMUX=0")); //Esta la conexión en modo simple(udp/tcp cliente o tcp server)
-    Serial.println(debugGSM());
-    delay(500);
-    
-    // Configurar tarea y configura el APN
-    sim800l.println(operadorAPN);
-    Serial.println(debugGSM());
-    delay(500);
-    
-    sim800l.println(F("AT+CIICR")); // Levantar conexión wireless(GPRS o CSD)
-    Serial.println(debugGSM());
-    delay(500);
-}
 
 /**
  * Se acitva si el peso se encuentra en un limite definido
@@ -485,6 +505,10 @@ void enviarDatosSIM() {
     delay(2000);
     
     sim800l.println(F("AT+CIPSTART=\"TCP\",\"107.170.208.9\",\"8080\"")); //Inicia conexión UDP o TCP
+    Serial.println(debugGSM());
+    delay(2000);
+
+    sim800l.println(F("AT+CIPMODE=1")); //Inicia conexión UDP o TCP
     Serial.println(debugGSM());
     delay(2000);
     
@@ -646,6 +670,9 @@ void visualizarVariablesSerial(){
     Serial.print("Envio de datos finalizado.\r\n");
 }
 
+/*
+ *  Funcion para mostrar mensaje autoScroll en 1 fila
+ */
 void mostrarMensajeAutoscroll(char *mensaje){
   int tamannoOp = strlen(mensaje)-1;
   int ancho = 15;//El número de columnas del LCD son 16 menos 1 = 15
@@ -661,6 +688,9 @@ void mostrarMensajeAutoscroll(char *mensaje){
   }
 }
 
+/*
+ *  Funcion para mostrar mensaje autoScroll en 2 filas
+ */
 void mostrarMensajesAutoscroll(char *mensaje, char *mensaje2){
   //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
   const int tamannoOp = strlen(mensaje2)-1;
@@ -680,6 +710,9 @@ void mostrarMensajesAutoscroll(char *mensaje, char *mensaje2){
   }
 }
 
+/*
+ *  Funcion para mostrar mensaje autoScroll en 2 filas con funcion CallBack
+ */
 void mostrarMensajesAutoscrollConFuncion(const char mensaje[], const char mensaje2[],bool (*fun)() ){
   //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
   const int tamannoOp = strlen(mensaje2)-1;
@@ -714,11 +747,7 @@ void mostrarMensajesAutoscrollConFuncion(const char mensaje[], const char mensaj
   goto VOLVERAMOSTRAR;
 }
 
-void mensajeBienvenida(){
-  char *mensaje  = (char*)"    Bienvenido a SIE    ";
-  char *mensaje2 = (char*)"    Cultivando Futuro.  ";
-  mostrarMensajesAutoscroll(mensaje,mensaje2);
-}
+
 
 /****** FIN FUNCIONES ADICIONALES ******/
 
