@@ -8,7 +8,7 @@
 #include <virtuabotixRTC.h> //
 // Creation of the Real Time Clock Object
 virtuabotixRTC myRTC(21, 20, 19); // CLK,DAT,RST -- SCLK -> 21, I/O -> 20, CE -> 19
-    /****** FIN MODULO RELOJ ******/
+/****** FIN MODULO RELOJ ******/
 
 /***** INICIO KEYBOARD *****/
 #include <Keypad.h> 
@@ -34,7 +34,7 @@ int intentos = 10;
 /***** INICIO LCD ******/
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(12, 11, 10, 9, 8, 7); // LiquidCrystal(rs, enable, d4, d5, d6, d7)
-    /***** FIN LCD ******/
+/***** FIN LCD ******/
 
 /***** INICIO MODULO GPS ******/
 #define GPS_TX_DIGITAL_OUT_PIN 13
@@ -159,7 +159,7 @@ void ingresarAPN() {
 bool detectarTeclaOperador() {
   char key = keypad.getKey();
   Serial.println(String(key));
-  /////////////////////////////////////////Números del 1 al 3
+  //Números del 1 al 3
   if (key) {
     switch (key) {
     case '1':
@@ -211,7 +211,7 @@ void configurarGPS() {
  * Se configura el módulo GSM
  */
 void configurarGPRS() {
-  sim800l.begin(19200); //Configuracion de puerto serial del modulo (baudios por segundo)
+  sim800l.begin(19200);//Configuracion de puerto serial del modulo (baudios por segundo)
   
   // pinMode(53, OUTPUT);
   Serial.println("Iniciando configuracion del modulo GSM");
@@ -246,8 +246,6 @@ void configurarGPRS() {
   delay(500);
   
   // Configurar tarea y configura el APN
-  //sim800l.println(F("AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\""));
-  //sim800l.println(F("AT+CSTT=\"web.vmc.net.co\",\"\",\"\""));
   sim800l.println(operadorAPN);
   Serial.println(debugGSM());
   delay(500);
@@ -276,9 +274,9 @@ void loop() {
   delay(4000);
   visualizarVariablesSerial();
   mostrarFecha();
-  mostrarRegistros(); //Humedad y Temperatura, Aire y Suelo
-  mostrarRegistros2(); //Nivel UV e Intensidad UV
-  mostrarRegistros3(); //Latitud y Longitud
+  mostrarRegistros();//Humedad y Temperatura, Aire y Suelo
+  mostrarRegistros2();//Nivel UV e Intensidad UV
+  mostrarRegistros3();//Latitud y Longitud
 }
 
 /****** INICIO FUNCIONES ADICIONALES ******/
