@@ -592,9 +592,9 @@ boolean ingresarClave() {
                 lcd.print("           ");
 
                 if (intentos <= 0) {
-                    lcd.setCursor(0, 0);
-                    lcd.print("Reinicie el sistema");
-                    while (true) {};
+                    while (true) {
+                      mostrarMensajeAutoscroll((char*)"    Reinicie el sistema    ");
+                    }
                 } else {
                     intentos--;
                     posicion = 0;
