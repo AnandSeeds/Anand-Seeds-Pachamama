@@ -1,7 +1,9 @@
 #include <SoftwareSerial.h>
 
-#define FONA_RX 3 //comms
-#define FONA_TX 4 //comms
+//PIN FONA Vio = 5V
+//PIN FONA GND = GND
+#define FONA_RX 3 // Serial RX
+#define FONA_TX 4 // Serial TX
 #define FONA_RST 5  //resets board
 #define FONA_KEY 6 //powers board down
 #define FONA_PS 7 //status pin. Is the board on or not?
