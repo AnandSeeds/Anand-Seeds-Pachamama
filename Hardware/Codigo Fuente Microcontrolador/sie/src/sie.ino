@@ -170,45 +170,72 @@ void mostrarMensajesAutoscrollConFuncion(const char mensaje[],
  *  Funcion mensaje
  */
 void ingresarAPN() {
-  const char mensaje[] = "   Ingresa Operador Movil:    "; //El mensaje y el operador deben ser del mismo tamaño
-  const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN";
+  const char mensaje[] = "   Ingresa Operador Movil:              Ingresa Operador Movil:         "; //El mensaje y el operador deben ser del mismo tamaño
+  const char operador[] = "   1-CLARO 2-MOVISTAR 3-VIRGIN 4-TIGO 5-UFF 6-UNE 7-ETB 8-EXITO 9-AVANTEL";
   mostrarMensajesAutoscrollConFuncion(mensaje, operador,detectarTeclaOperador);
 }
 
 /*
  *  Funcion para seleccionar operadorAPN por teclado matricial
  */
-bool detectarTeclaOperador() {
-  char key = keypad.getKey();
-  Serial.println(String(key));
-  //Números del 1 al 3
-  if (key) {
-    switch (key) {
-    case '1':
-      operadorAPN =
-          String(
-              "AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\"");
-      Serial.println("Configurando APN Claro");
-      break;
-    case '2':
-      operadorAPN =
-          String(
-              "AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\"");
-      Serial.println("Configurando APN Movistar");
-      break;
-    case '3':
-      operadorAPN = String("AT+CSTT=\"web.vmc.net.co\",\"\",\"\"");
-      Serial.println("Configurando APN Virgin Mobile");
-      break;
-    default:
-      return false;
-      break;
-    }
-    return true;
-  } else {
-    return false;
-  }
-}
+ bool detectarTeclaOperador() {
+   char key = keypad.getKey();
+   Serial.println(String(key));
+   //Números del 1 al 3
+   if (key) {
+     switch (key) {
+     case '1':
+       operadorAPN =
+           String(
+               "AT+CSTT=\"internet.comcel.com.co\",\"COMCELWEB\",\"COMCELWEB\"");
+       Serial.println("Configurando APN Claro");
+       break;
+     case '2':
+       operadorAPN =
+           String(
+               "AT+CSTT=\"internet.movistar.com.co\",\"movistar\",\"movistar\"");
+       Serial.println("Configurando APN Movistar");
+       break;
+     case '3':
+       operadorAPN = String("AT+CSTT=\"web.vmc.net.co\",\"\",\"\"");
+       Serial.println("Configurando APN Virgin Mobile");
+       break;
+     case '4':
+       operadorAPN = String("AT+CSTT=\"web.colombiamovil.com.co\",\"\",\"\"");
+       Serial.println("Configurando APN TIGO");
+       break;
+     case '5':
+       operadorAPN = String("AT+CSTT=\"web.uffmovil.com\",\"\",\"\"");
+       Serial.println("Configurando APN UFF");
+       break;
+     case '6':
+       operadorAPN = String("AT+CSTT=\"www.une.net.co\",\"une\",\"une\"");
+       Serial.println("Configurando APN UNE");
+       break;
+     case '7':
+       operadorAPN = String("AT+CSTT=\"moviletb.net.co\",\"etb\",\"etb\"");
+       Serial.println("Configurando APN ETB");
+       break;
+     case '8':
+       operadorAPN = String("AT+CSTT=\"movilexito.net.co\",\"\",\"\"");
+       Serial.println("Configurando APN EXITO");
+       break;
+     case '9':
+       operadorAPN = String("AT+CSTT=\"lte.avantel.com.co\",\"\",\"\"");
+       Serial.println("Configurando APN TIGO");
+       break;
+
+
+     default:
+       return false;
+       break;
+     }
+     return true;
+   } else {
+     return false;
+   }
+ }
+
 
 void configurarMonitorSerial() {
   Serial.begin(9600);
