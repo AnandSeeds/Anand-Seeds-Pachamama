@@ -13,7 +13,7 @@ virtuabotixRTC myRTC(21, 20, 19); // CLK,DAT,RST -- SCLK -> 21, I/O -> 20, CE ->
 /****** FIN MODULO RELOJ ******/
 
 /***** INICIO KEYBOARD *****/
-#include <Keypad.h> 
+#include <Keypad.h>
 const byte ROWS = 4; // four rows
 const byte COLS = 4; // three columns
 
@@ -103,24 +103,7 @@ int pinSonda = A6;
 float escala = 0.1; //100 para voltios, 0.1 para milivoltios
 /****** FIN VOLTIMETRO ******/
 
-/*
- ***********************************************************************
- *              SETUP CONFIGURACIÓN INICIAL
- ***********************************************************************
- */
-void setup() {
-  configurarMonitorSerial();
-  configurarLCD();
-  mensajeBienvenida();
-  validarAccesoPorClave();
-  ingresarAPN();
-  mensajeCargando();
-  configurarGPRS();
-  configurarRTC();
-  configurarGPS();
-  configurarSensorDHT();
-}
-
+/****** INICIO FUNCIONES ADICIONALES SETUP******/
 void configurarLCD() {
   lcd.begin(16, 2);
 }
@@ -146,7 +129,45 @@ void validarAccesoPorClave() {
 }
 
 /*
- *  Funcion mensaje 
+ *  Funcion para mostrar mensaje autoScroll en 2 filas con funcion CallBack
+ */
+void mostrarMensajesAutoscrollConFuncion(const char mensaje[],
+    const char mensaje2[], bool (*fun)()) {
+  //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
+  const int tamannoOp = strlen(mensaje2) - 1;
+  int ancho = 15; //El número de columnas del LCD son 16 menos 1 = 15
+
+  VOLVERAMOSTRAR: int barrido = 0;
+
+  while (barrido <= tamannoOp - ancho) {
+    for (int positionCounter = barrido; positionCounter <= ancho + barrido;
+        positionCounter++) {
+      lcd.setCursor(positionCounter - barrido, 0);
+      lcd.print(String(mensaje[positionCounter]));
+      lcd.setCursor(positionCounter - barrido, 1);
+      lcd.print(String(mensaje2[positionCounter]));
+      bool siTecla = (*fun)();
+      if (siTecla) {
+        return;
+      }
+    }
+    barrido++;
+    int temporizador = 150;
+    while (temporizador > 0) {
+      bool siTecla = (*fun)();
+      if (siTecla) {
+        return;
+      }
+      temporizador--;
+    }
+    lcd.clear();
+  }
+
+  goto VOLVERAMOSTRAR;
+}
+
+/*
+ *  Funcion mensaje
  */
 void ingresarAPN() {
   const char mensaje[] = "   Ingresa Operador Movil:    "; //El mensaje y el operador deben ser del mismo tamaño
@@ -209,11 +230,29 @@ void configurarGPS() {
 }
 
 /**
+ * Realiza la lectura del buffer del módulo GSM, acumula la salida de
+ * caracteres hasta que la transmisión serial termina
+ * Acumulador de caracteres recursivo
+ */
+char *debugGSM() { // devuelve el ``contenido de un objeto apuntado por un apuntador''.
+  int i = 0;
+  static char cad[255] = "\0";
+  char c = '\0';
+  strcpy(cad, "");
+  while (sim800l.available() > 0) {
+    c = sim800l.read();
+    cad[i] = c;
+    i++;
+  }
+  return cad;
+}
+
+/**
  * Se configura el módulo GSM
  */
 void configurarGPRS() {
   sim800l.begin(19200);//Configuracion de puerto serial del modulo (baudios por segundo)
-  
+
   // pinMode(53, OUTPUT);
   Serial.println("Iniciando configuracion del modulo GSM");
   sim800l.println(F("AT"));
@@ -225,11 +264,11 @@ void configurarGPRS() {
   sim800l.println(F("AT+IPR=19200"));//Retorna el estado de la bateria del dispositivo, el % y milivol
   delay(500);
   Serial.println(debugGSM());
-  
+
   sim800l.println(F("AT+CSQ"));// Retorna la calidad de la señal que depende de la antena y la localizacion
   delay(500);
   Serial.println(debugGSM());
-  
+
   sim800l.println(F("AT+CREG=1"));// Verifica si la simcard a sido o no registrada
   Serial.println(debugGSM());
   delay(500);
@@ -245,12 +284,12 @@ void configurarGPRS() {
   sim800l.println(F("AT+CIPMUX=0"));//Esta la conexión en modo simple(udp/tcp cliente o tcp server)
   Serial.println(debugGSM());
   delay(500);
-  
+
   // Configurar tarea y configura el APN
   sim800l.println(operadorAPN);
   Serial.println(debugGSM());
   delay(500);
-  
+
   sim800l.println(F("AT+CIICR"));// Levantar conexión wireless(GPRS o CSD)
   Serial.println(debugGSM());
   delay(500);
@@ -259,28 +298,23 @@ void configurarGPRS() {
 
 /*
  ***********************************************************************
- *              LOOP BUCLE PRINCIPAL
+ *              SETUP CONFIGURACIÓN INICIAL
  ***********************************************************************
  */
-void loop() {
-  sensarEstadoBateria();
+void setup() {
+  configurarMonitorSerial();
+  configurarLCD();
+  mensajeBienvenida();
+  validarAccesoPorClave();
+  ingresarAPN();
   mensajeCargando();
-  GetTimeRTC();
-  GetGPS();
-  GetHT();
-  GetTs();
-  GetHS();
-  GetUV();
-  enviarDatosSIM();
-  delay(4000);
-  visualizarVariablesSerial();
-  mostrarFecha();
-  mostrarRegistros();//Humedad y Temperatura, Aire y Suelo
-  mostrarRegistros2();//Nivel UV e Intensidad UV
-  mostrarRegistros3();//Latitud y Longitud
+  configurarGPRS();
+  configurarRTC();
+  configurarGPS();
+  configurarSensorDHT();
 }
 
-/****** INICIO FUNCIONES ADICIONALES ******/
+/****** INICIO FUNCIONES ADICIONALES LOOP******/
 
 /*
  *  Funcion para el sensado de baterias
@@ -466,8 +500,8 @@ void mostrarFecha() {
 
 /**
  * Funcion para promedio de muestreo
- * @param int pinToRead el puerto análogo que se debe leer 
- * @return int se obtiene el promedio de las últimas 8 muestras tomadas en el pin 
+ * @param int pinToRead el puerto análogo que se debe leer
+ * @return int se obtiene el promedio de las últimas 8 muestras tomadas en el pin
  */
 int averageAnalogRead(int pinToRead) {
   byte numberOfReadings = 8;
@@ -511,7 +545,7 @@ void enviarDatosSIM() {
   } else {
     lcd.print("Enviando Datos...");
   }
-  
+
   //Se acitva si el peso se encuentra en un limite definido
   //sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
   //Serial.println(debugGSM());
@@ -560,10 +594,10 @@ void enviarDatosSIM() {
   //sim800l.write(0x1A);//ctlr+z para finalizar el envio o 0x1A
   Serial.println(debugGSM());
   delay(2000);
-  
+
   sim800l.println(F("AT+CIPSHUT")); //Resetea las direcciones IP
   Serial.println(debugGSM());
-  
+
   lcd.clear();
   lcd.print("Datos Enviados");
 }
@@ -580,24 +614,6 @@ void pushSlow(char* command, int charaterDelay, int endLineDelay) {
       delay(charaterDelay);
     }
   }
-}
-
-/**
- * Realiza la lectura del buffer del módulo GSM, acumula la salida de
- * caracteres hasta que la transmisión serial termina
- * Acumulador de caracteres recursivo
- */
-char *debugGSM() { // devuelve el ``contenido de un objeto apuntado por un apuntador''. 
-  int i = 0;
-  static char cad[255] = "\0";
-  char c = '\0';
-  strcpy(cad, "");
-  while (sim800l.available() > 0) {
-    c = sim800l.read();
-    cad[i] = c;
-    i++;
-  }
-  return cad;
 }
 
 /*
@@ -730,45 +746,27 @@ void mostrarMensajesAutoscroll(char *mensaje, char *mensaje2) {
   }
 }
 
-/*
- *  Funcion para mostrar mensaje autoScroll en 2 filas con funcion CallBack
- */
-void mostrarMensajesAutoscrollConFuncion(const char mensaje[],
-    const char mensaje2[], bool (*fun)()) {
-  //El mensaje1 y el mensaje 2 deben ser del mismo tamaño
-  const int tamannoOp = strlen(mensaje2) - 1;
-  int ancho = 15; //El número de columnas del LCD son 16 menos 1 = 15
-
-  VOLVERAMOSTRAR: int barrido = 0;
-
-  while (barrido <= tamannoOp - ancho) {
-    for (int positionCounter = barrido; positionCounter <= ancho + barrido;
-        positionCounter++) {
-      lcd.setCursor(positionCounter - barrido, 0);
-      lcd.print(String(mensaje[positionCounter]));
-      lcd.setCursor(positionCounter - barrido, 1);
-      lcd.print(String(mensaje2[positionCounter]));
-      bool siTecla = (*fun)();
-      if (siTecla) {
-        return;
-      }
-    }
-    barrido++;
-    int temporizador = 150;
-    while (temporizador > 0) {
-      bool siTecla = (*fun)();
-      if (siTecla) {
-        return;
-      }
-      temporizador--;
-    }
-    lcd.clear();
-  }
-
-  goto VOLVERAMOSTRAR;
-}
-
 /****** FIN FUNCIONES ADICIONALES ******/
 
-
-
+/*
+ ***********************************************************************
+ *              LOOP BUCLE PRINCIPAL
+ ***********************************************************************
+ */
+void loop() {
+  sensarEstadoBateria();
+  mensajeCargando();
+  GetTimeRTC();
+  GetGPS();
+  GetHT();
+  GetTs();
+  GetHS();
+  GetUV();
+  enviarDatosSIM();
+  delay(4000);
+  visualizarVariablesSerial();
+  mostrarFecha();
+  mostrarRegistros();//Humedad y Temperatura, Aire y Suelo
+  mostrarRegistros2();//Nivel UV e Intensidad UV
+  mostrarRegistros3();//Latitud y Longitud
+}
