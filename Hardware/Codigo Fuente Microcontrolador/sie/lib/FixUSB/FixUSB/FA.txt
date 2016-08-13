@@ -1,8 +1,0 @@
-MataFile.exe /unlock {Ruta_de_Archivo}
-MataFile.exe /assassinate {Ruta_de_Archivo}
-
-/unlock		Solo Desbloquea el archivo
-/assassinate	Usa el metodo FileASSASIN
-/onreboot	Borra el archivo al Reinicio
-/delete		Borra archivo normalmente
-/silent		Sin Cajas de Mensajes
